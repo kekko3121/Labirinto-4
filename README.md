@@ -12,4 +12,4 @@ Il programma deve permettere di registrare l’utente con il suo nome e cognome 
 
 Per i dettagli di sviluppo vedere: http://mf.erciyes.edu.tr/abc/
 
-![alt text](https://github.com/kekko3121/Labirinto-4/blob/[branch]/VCEMJEup_o.jpg?raw=true)
+![VCEMJEup_o](https://github.com/kekko3121/Labirinto-4/assets/82752353/891c7e56-1931-49e9-925d-43811184cc0a)
