@@ -1,5 +1,5 @@
 package com.maze;
 
 public interface MazeInterface {
-    public void createMaze();
+    public void generateMaze();
 }
