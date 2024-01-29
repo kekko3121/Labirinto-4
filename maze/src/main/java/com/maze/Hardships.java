@@ -1,4 +1,4 @@
-package com.labirinto;
+package com.maze;
 
 public enum Hardships {
     EASY(1), MEDIUM(2), HARD(3);
