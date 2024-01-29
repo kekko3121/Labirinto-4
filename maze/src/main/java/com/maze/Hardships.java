@@ -11,5 +11,5 @@ public enum Hardships {
 
     public int getValue() {
         return value;
-    }   
+    }
 }
