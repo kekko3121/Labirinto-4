@@ -1,7 +1,8 @@
 package com.maze.FactoryPattern;
 
 import java.util.Random;
-import com.maze.Iterator.*;
+
+import com.maze.Interactors.*;
 
 public abstract class Maze implements MazeInterface {
     
@@ -33,6 +34,10 @@ public abstract class Maze implements MazeInterface {
         }
         this.dim = dim;
         generateExit();
+    }
+
+    public Box[][] getMaze(){
+        return maze;
     }
 
     /**
@@ -74,5 +79,9 @@ public abstract class Maze implements MazeInterface {
         return exitMaze;
     }
 
+    /**
+     * abstract method that generates the maze,
+     * it is implemented in the subclasses
+     */
     public abstract void generateMaze();
 }

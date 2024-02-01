@@ -1,4 +1,4 @@
-package com.maze.Iterator;
+package com.maze.Interactors;
 
 /**
  * Class that represents a box in the maze

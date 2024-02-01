@@ -1,4 +1,4 @@
-package com.maze.Iterator;
+package com.maze.Interactors;
 
 /**
  * Enum that represents the possible values of a box in the maze
