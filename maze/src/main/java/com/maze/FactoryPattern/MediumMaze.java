@@ -1,37 +1,34 @@
 package com.maze.FactoryPattern;
 
 import java.util.Random;
-
 import com.maze.Interactors.ValueBox;
 
 /**
- * Class that represents the easy maze
+ * Class that represents the medium maze
  * It extends the Maze class
  * It generates the maze and the trapdoors
  */
-public class EasyMaze extends Maze{
+public class MediumMaze extends Maze{
     /**
-     * Constructor of the class EasyMaze that calls the constructor of the Maze class
+     * Constructor of the class MediumMaze that calls the constructor of the Maze class
      */
-    public EasyMaze(){
+    public MediumMaze(){
         super(14); // call the constructor of the Maze class with the dimension of 14
     }
-    
+
     /**
      * Generates the maze
      */
-    @Override
     public void generateMaze(){
-        Random random = new Random(); // random number generator to generate the maze
-        for(int i = 0; i < getDim(); i++){ // iterate over the maze
+        Random random = new Random();
+        for(int i = 0; i < getDim(); i++){
             for(int j = 0; j < getDim(); j++){
-                // if the random number is less than 0.05 and the position is not the exit
-                if(random.nextDouble() < 0.05 && getExitMaze().getX() != i && getExitMaze().getY() != j){ 
-                    generateRandomLine(i, j); //generate a random line wall in the maze
+                if(random.nextDouble() < 0.05 && getExitMaze().getX() != i && getExitMaze().getY() != j){
+                    generateRandomLine(i, j);
                 }
             }
         }
-        generateTrapdoors(); // generate the trapdoors in the maze
+        generateTrapdoors();
     }
 
     /**
@@ -63,15 +60,14 @@ public class EasyMaze extends Maze{
      * Generates the trapdoors in the maze
      */
     private void generateTrapdoors(){
-        Random random = new Random(); // random number generator to generate the trapdoors
-        int trapdoorsPlaced = 0; // number of trapdoors placed
-        while (trapdoorsPlaced < 2) { // while the number of trapdoors placed is less than 2
-            int x = random.nextInt(getDim()); // generate a random x coordinate
-            int y = random.nextInt(getDim()); // generate a random y coordinate
-            // if the value of the box is empty and the position is not the exit
+        Random random = new Random();
+        int trapdoorsPlaced = 0;
+        while (trapdoorsPlaced < 4) {
+            int x = random.nextInt(getDim());
+            int y = random.nextInt(getDim());
             if (getMaze()[x][y].getValue() == ValueBox.EMPTY && getExitMaze().getX() != x && getExitMaze().getY() != y){
-                getMaze()[x][y].setValue(ValueBox.HATCH); // set the value of the box to HATCH
-                trapdoorsPlaced++; // increment the number of trapdoors placed
+                getMaze()[x][y].setValue(ValueBox.HATCH);
+                trapdoorsPlaced++;
             }
         }
     }
