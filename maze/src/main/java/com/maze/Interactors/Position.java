@@ -26,15 +26,15 @@ public class Position {
     }
 
     /**
-     * Initializes a position with the given position
-     * @param x position
-     */
+     * Set the x coordinate of the position
+     * @param x coordinate
+    */
     public void setX(int x){
         this.x = x;
     }
 
     /**
-     * Initializes a position with the given position
+     * Set the y coordinate of the position
      * @param y position
      */
     public void setY(int y){
