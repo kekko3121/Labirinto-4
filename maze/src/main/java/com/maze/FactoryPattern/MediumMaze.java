@@ -1,7 +1,6 @@
 package com.maze.FactoryPattern;
 
 import java.util.Random;
-import com.maze.Interactors.ValueBox;
 
 /**
  * Class that represents the medium maze
@@ -24,51 +23,10 @@ public class MediumMaze extends Maze{
         for(int i = 0; i < getDim(); i++){
             for(int j = 0; j < getDim(); j++){
                 if(random.nextDouble() < 0.05 && getExitMaze().getX() != i && getExitMaze().getY() != j){
-                    generateRandomLine(i, j);
+                    generateRandomLine(i, j); //generate a random line wall in the maze
                 }
             }
         }
-        generateTrapdoors();
-    }
-
-    /**
-     * Generates a random line in the maze
-     * @param startX
-     * @param startY
-     */
-    private void generateRandomLine(int startX, int startY){
-        // generate a random line
-        boolean horizontal = new Random().nextBoolean();
-        int size = 2 + new Random().nextInt(5); // size of the line (2-6)
-        if(horizontal){ // horizontal line
-            for(int j = startY; j < Math.min(startY + size, getDim()); j++){ // min(startY + size, getDim()) to avoid out of bounds
-                if (j < getDim()){ // check if the index is in the maze
-                    getMaze()[startX][j].setValue(ValueBox.WALL); // set the value of the box to WALL
-                }
-            }
-        }
-        else{ // vertical line
-            for(int i = startX; i < Math.min(startX + size, getDim()); i++){
-                if (i < getDim()){
-                    getMaze()[i][startY].setValue(ValueBox.WALL);
-                }
-            }
-        }
-    }
-
-    /**
-     * Generates the trapdoors in the maze
-     */
-    private void generateTrapdoors(){
-        Random random = new Random();
-        int trapdoorsPlaced = 0;
-        while (trapdoorsPlaced < 4) {
-            int x = random.nextInt(getDim());
-            int y = random.nextInt(getDim());
-            if (getMaze()[x][y].getValue() == ValueBox.EMPTY && getExitMaze().getX() != x && getExitMaze().getY() != y){
-                getMaze()[x][y].setValue(ValueBox.HATCH);
-                trapdoorsPlaced++;
-            }
-        }
+        generateTrapdoors(4); // generate the trapdoors in the maze with a number of 4
     }
 }

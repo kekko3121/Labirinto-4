@@ -4,18 +4,17 @@ import com.maze.Interactors.*;
 
 public class Test {
     public static void main(String[] args) {
-        EasyMaze easyMaze = new EasyMaze();
-        easyMaze.generateMaze();
-
+        Maze rmaze = new MazeDifficultyLevel().createMaze(Hardships.HARD);
+        
         // Ottieni la matrice del labirinto
-        Box[][] maze = easyMaze.getMaze();
+        Box[][] maze = rmaze.getMaze();
         
         // Ottieni la posizione dell'uscita
-        Position exitPosition = easyMaze.getExitMaze();
+        Position exitPosition = rmaze.getExitMaze();
 
         // Stampare il labirinto
-        for (int i = 0; i < easyMaze.getDim(); i++) {
-            for (int j = 0; j < easyMaze.getDim(); j++) {
+        for (int i = 0; i < rmaze.getDim(); i++) {
+            for (int j = 0; j < rmaze.getDim(); j++) {
                 // Verifica se la posizione corrente corrisponde all'uscita
                 if (i == exitPosition.getX() && j == exitPosition.getY()) {
                     System.out.print("E "); // Stampa l'uscita del labirinto
