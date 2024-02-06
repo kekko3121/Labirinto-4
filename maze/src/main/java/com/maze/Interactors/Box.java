@@ -24,6 +24,14 @@ public class Box {
             this.value = value;
             this.position = position;
         }
+
+        /**
+         * Initializes a box with the given value
+         * @param value of the box
+         */
+        public Box(ValueBox value){
+            this.value = value;
+        }
         
         /**
          * Returns the value of the box

@@ -36,23 +36,42 @@ public class ArtificialBeeColony {
     /**
      * Run the ABC algorithm
      */
-    public void run(){
+    public List<Position> run(){
         List<List<Position>> solutions = new ArrayList<>(); // List to store solutions
 
         // Initialize the solutions
         for (int i = 0; i < NUM_BEES; i++) {
             solutions.add(new ArrayList<>(solutionTemplate)); // Add a copy of the template solution
         }
-
+    
         // Circle of the ABC algorithm
         for (int cycle = 0; cycle < MAX_CYCLES; cycle++) {
             employedBeesPhase(solutions); // Employed bees phase
             onlookerBeesPhase(solutions); // Onlooker bees phase
+            
+            // Apply local improvement to each solution
+            for (List<Position> solution : solutions) {
+                improveSolution(solution);
+            }
         }
+
+        // Find the best solution
+        List<Position> bestSolution = solutions.get(0);
+        double bestQuality = calculateQuality(bestSolution);
+        for (List<Position> solution : solutions) {
+            double quality = calculateQuality(solution);
+            if (quality > bestQuality) {
+                bestSolution = solution;
+                bestQuality = quality;
+            }
+        }
+
+        return bestSolution;
     }
 
     /**
      * calculate the quality of the solution
+     * @param solution
      */
     private void employedBeesPhase(List<List<Position>> solutions) {
         for (List<Position> solution : solutions) {
@@ -68,13 +87,42 @@ public class ArtificialBeeColony {
 
     /**
      * calculate the probability of the solution
+     * @param solutions
      */
     private void onlookerBeesPhase(List<List<Position>> solutions) {
-        for (List<Position> solution : solutions) {
-            double probability = calculateProbability(solution, solutions); // Calcola la probabilità della soluzione
-            if (rand.nextDouble() < probability) {
-                solution.clear(); // Cancella la soluzione se la probabilità è maggiore di un numero casuale
-                solution.addAll(generateRandomSolution()); // Aggiunge una nuova soluzione casuale
+        double[] probabilities = new double[NUM_BEES];
+        double totalQuality = 0.0;
+    
+        // calculate the total quality of the solutions
+        for (int i = 0; i < NUM_BEES; i++) {
+            List<Position> solution = solutions.get(i);
+            double quality = calculateQuality(solution);
+            totalQuality += quality;
+            probabilities[i] = quality;
+        }
+    
+        // normalize the probabilities
+        for (int i = 0; i < NUM_BEES; i++) {
+            probabilities[i] /= totalQuality;
+        }
+    
+       // select the solutions based on the probabilities
+        for (int i = 0; i < NUM_BEES; i++) {
+            if (rand.nextDouble() < probabilities[i]) {
+                List<Position> solution = solutions.get(i);
+                double quality = calculateQuality(solution);
+                
+                // generate a new solution
+                List<Position> newSolution = generateRandomSolution();
+
+                // calculate the quality of the new solution
+                double newQuality = calculateQuality(newSolution);
+
+                // replace the current solution with the new solution if the quality is better
+                if (newQuality > quality) {
+                    // Sostituisci la soluzione attuale con la nuova soluzione
+                    solutions.set(i, newSolution);
+                }
             }
         }
     }
@@ -130,20 +178,45 @@ public class ArtificialBeeColony {
     }
 
     /**
-     * calculate the probability of the solution
-     * @param solution
-     * @return
+     * Improve a solution using a local search strategy
+     * @param solution the solution to be improved
      */
-    private double calculateProbability(List<Position> solution, List<List<Position>> allSolutions) {
-        double quality = calculateQuality(solution); // Qualità della soluzione
-        double totalQuality = 0.0; // Qualità totale delle soluzioni
-        
-        // Calcola la qualità totale delle soluzioni
-        for (List<Position> sol : allSolutions) {
-            totalQuality += calculateQuality(sol);
+    private void improveSolution(List<Position> solution) {
+        int improvementCount = 0; // Track the number of improvements
+        int maxIterations = 100; // Define a maximum number of iterations for local search
+        int iterations = 0;
+
+        while (improvementCount < 3 && iterations < maxIterations) {
+            // Clone the current solution for comparison
+            List<Position> originalSolution = new ArrayList<>(solution);
+
+            // Apply local search by randomly moving within a neighborhood
+            for (int i = 1; i < solution.size() - 1; i++) {
+                Position originalPosition = solution.get(i);
+
+                // Generate random moves within a neighborhood
+                for (int moveX = -1; moveX <= 1; moveX++) {
+                    for (int moveY = -1; moveY <= 1; moveY++) {
+                        Position newPosition = new Position(originalPosition.getX() + moveX, originalPosition.getY() + moveY);
+
+                        // Check if the new position is valid and improves the solution
+                        if (isValidPosition(newPosition)) {
+                            solution.set(i, newPosition); // Move to the new position
+                            double newQuality = calculateQuality(solution);
+
+                            // If the quality improves, accept the move
+                            if (newQuality > calculateQuality(originalSolution)) {
+                                improvementCount++;
+                            } else {
+                                // Revert the move if the quality doesn't improve
+                                solution.set(i, originalPosition);
+                            }
+                        }
+                    }
+                }
+            }
+
+            iterations++;
         }
-        
-        // Calcola e restituisce la probabilità della soluzione rispetto alle altre soluzioni
-        return quality / totalQuality;
     }
 }

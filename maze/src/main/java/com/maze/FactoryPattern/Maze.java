@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.maze.Interactors.*;
 
-public abstract class Maze implements MazeInterface {
+public abstract class Maze implements IMaze {
     
     /**
      * Matrix that represents the maze
