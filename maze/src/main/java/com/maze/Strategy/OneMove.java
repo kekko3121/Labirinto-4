@@ -1,0 +1,17 @@
+package com.maze.Strategy;
+
+import com.maze.ABC.ArtificialBeeColony;
+import com.maze.Interactors.*;
+
+public class OneMove {
+    
+    private ArtificialBeeColony abc;
+
+    public OneMove(Box[][] maze, Position exitPosition){
+        abc = new ArtificialBeeColony(maze, exitPosition);
+    }
+
+    public Position nextMove(Position currentPosition){
+        return abc.run().get(0);
+    }
+}
