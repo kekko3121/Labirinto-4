@@ -1,21 +1,16 @@
 package com.maze.State;
 
-import com.maze.Interactors.Box;
 import com.maze.Interactors.Position;
-import com.maze.Strategy.OneMove;
+import com.maze.Strategy.IStrategy;
 
-public class OneMoveState implements IState {
+public class OneMoveState {
+    private IStrategy strategy;
 
-    private OneMove oneMoveStrategy;
-
-    public OneMoveState(Box[][] maze, Position exitPosition) {
-        this.oneMoveStrategy = new OneMove(maze, exitPosition);
+    public OneMoveState(IStrategy strategy) {
+        this.strategy = strategy;
     }
 
-    @Override
-    public void doAction(Box box) {
-        Position currentPosition = box.getPosition();
-        Position nextPosition = oneMoveStrategy.nextMove(currentPosition);
-        box.setPosition(nextPosition);
+    public Position doAction(Position currentPosition) {
+        return strategy.nextMove(currentPosition);
     }
 }

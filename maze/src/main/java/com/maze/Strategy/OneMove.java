@@ -12,6 +12,6 @@ public class OneMove {
     }
 
     public Position nextMove(Position currentPosition){
-        return abc.run().get(0);
+        return abc.moveMicrorobot(currentPosition);
     }
 }

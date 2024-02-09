@@ -11,7 +11,7 @@ public class Box {
         private ValueBox value;
 
         /**
-         * Position of the box
+         * Position of the box  in the maze
          */
         private Position position;
 
@@ -55,5 +55,5 @@ public class Box {
          */
         public void setPosition(Position position){
             this.position = position;
-        }    
+        }
 }

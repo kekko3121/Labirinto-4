@@ -1,45 +1,30 @@
 package com.maze.State;
 
-import com.maze.Interactors.Box;
 import com.maze.Interactors.Position;
-import com.maze.Interactors.ValueBox;
 
 public class Microrobot {
     
     private IState microRobotState;
 
-    private Box actualBox;
+    private Position actualPosition;
 
-    public Microrobot(Box box, IState microRobotState){
-        this.actualBox = box;
+    public Microrobot(Position actualPosition, IState microRobotState){
+        this.actualPosition = actualPosition;
         this.microRobotState = microRobotState;
     }
 
-    public void setActualBox(Box box){
-        this.actualBox = box;
+    public void setActualPosition(Position actualPosition){
+        this.actualPosition = actualPosition;
     }
-
-    public Box getActualBox(){
-        return this.actualBox;
-    }
-
     public Position getPosition(){
-        return this.actualBox.getPosition();
+        return this.actualPosition;
     }
 
-    public ValueBox getValue(){
-        return this.actualBox.getValue();
-    }
-
-    public void setmicroRobotState(IState microRobotState){
+    public void setMicroRobotState(IState microRobotState){
         this.microRobotState = microRobotState;
     }
 
-    public IState getmicroRobotState(){
+    public IState getMicroRobotState(){
         return this.microRobotState;
-    }
-
-    public void move(Box box){
-        this.microRobotState.doAction(box);
     }
 }
