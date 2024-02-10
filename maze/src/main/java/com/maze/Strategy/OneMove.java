@@ -3,7 +3,7 @@ package com.maze.Strategy;
 import com.maze.ABC.ArtificialBeeColony;
 import com.maze.Interactors.*;
 
-public class OneMove {
+public class OneMove implements IStrategy{
     
     private ArtificialBeeColony abc;
 

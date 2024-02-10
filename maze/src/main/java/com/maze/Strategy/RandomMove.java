@@ -3,7 +3,7 @@ package com.maze.Strategy;
 import java.util.Random;
 import com.maze.Interactors.Position;
 
-public class RandomMove {
+public class RandomMove implements IStrategy{
     private Random rand;
 
     public RandomMove() {

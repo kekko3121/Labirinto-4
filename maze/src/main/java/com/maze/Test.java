@@ -1,32 +1,25 @@
 package com.maze;
 
 import com.maze.FactoryPattern.*;
-import com.maze.Interactors.Hardships;
-import com.maze.Interactors.Position;
+import com.maze.Interactors.*;
 import com.maze.State.*;
 import com.maze.Strategy.*;
 
 public class Test {
+
     public static void main(String[] args) {
-        // Creazione del labirinto di difficoltà media
-        Maze mazeFactory = new MazeDifficultyLevel().createMaze(Hardships.EASY);
-        
-        // Posizione iniziale del microrobot nel labirinto
-        Position initialPosition = new Position(0, 0);
+        Maze rmaze = new MazeDifficultyLevel().createMaze(Hardships.EASY);
 
-        OneMoveState onemove = new OneMoveState(new OneMove(mazeFactory.getMaze(), mazeFactory.getExitMaze()));
-        
-        // Creazione del microrobot nel labirinto
-        Microrobot microrobot = new Microrobot(initialPosition, (IState) onemove);
-        
-        // Simulazione del movimento del microrobot nel labirinto per 10 passi
-        for (int i = 0; i < 10; i++) {
-            
-            // Aggiorna la posizione del microrobot
-            microrobot.setActualPosition(microrobot.getMicroRobotState().doAction(microrobot.getPosition()));
+        // Creazione del microrobot
+        Microrobot microrobot = new Microrobot(new Position(0, 0), new OneMoveState(new OneMove(rmaze.getMaze(), rmaze.getExitMaze())));
 
-            // Stampa la nuova posizione del microrobot
-            System.out.println("Step " + (i + 1) + ": Microrobot Position: " + microrobot.getPosition());
+        // Movimento del microrobot nel labirinto
+        System.out.println("Posizione iniziale del microrobot: " + microrobot.getPosition());
+        while (!microrobot.getPosition().equals(rmaze.getExitMaze())) {
+            Position nextPosition = microrobot.getMicroRobotState().doAction(microrobot.getPosition());
+            microrobot.setActualPosition(nextPosition);
+            System.out.println("Microrobot si è spostato a: " + microrobot.getPosition());
         }
+        System.out.println("Microrobot ha raggiunto l'uscita!");
     }
 }
