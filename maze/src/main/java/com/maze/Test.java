@@ -11,14 +11,14 @@ public class Test {
         Maze rmaze = new MazeDifficultyLevel().createMaze(Hardships.EASY);
 
         // Creazione del microrobot
-        Microrobot microrobot = new Microrobot(new Position(0, 0), new OneMoveState(new OneMove(rmaze.getMaze(), rmaze.getExitMaze())));
+        Microrobot microrobot = new Microrobot(new Position(1, 4), new OneMoveState(new OneMove(rmaze.getMaze(), rmaze.getExitMaze())));
 
         // Movimento del microrobot nel labirinto
-        System.out.println("Posizione iniziale del microrobot: " + microrobot.getPosition());
+        System.out.println("Posizione iniziale del microrobot: " + microrobot.getPosition().getX() + " " + microrobot.getPosition().getY());
         while (!microrobot.getPosition().equals(rmaze.getExitMaze())) {
             Position nextPosition = microrobot.getMicroRobotState().doAction(microrobot.getPosition());
             microrobot.setActualPosition(nextPosition);
-            System.out.println("Microrobot si è spostato a: " + microrobot.getPosition());
+            System.out.println("Microrobot si è spostato a: " + microrobot.getPosition().getX() + " " + microrobot.getPosition().getY());
         }
         System.out.println("Microrobot ha raggiunto l'uscita!");
     }
