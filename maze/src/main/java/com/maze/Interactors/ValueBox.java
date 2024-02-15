@@ -1,10 +1,10 @@
 package com.maze.Interactors;
 
 /**
- * Enum that represents the possible values of a box in the maze
+ * Enumerazione che rappresenta i valori delle caselle del labirinto.
  */
 public enum ValueBox {
-    WALL,
-    EMPTY,
-    HATCH;
+    WALL, // casella con muro
+    EMPTY, // casella vuota
+    HATCH; // casella con botola
 }

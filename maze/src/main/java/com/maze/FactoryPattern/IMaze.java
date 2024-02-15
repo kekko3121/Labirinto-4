@@ -1,7 +1,6 @@
 package com.maze.FactoryPattern;
-
 /**
- * Interface that represents the maze
+ * Interfaccia per la generazione di un labirinto
  */
 public interface IMaze {
     public void generateMaze();

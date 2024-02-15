@@ -1,24 +1,18 @@
 package com.maze.Interactors;
 
 /**
- * Class that represents a position in the maze (x,y)
+ * Classe che rappresenta una posizione nel labirinto.
  */
 public class Position {
 
-    /**
-     * x coordinate
-     */
-    private int x;
-    
-    /**
-     * y coordinate
-     */
-    private int y;
+    private int x; // coordinate x
+
+    private int y; // coordinate y
 
     /**
-     * Initializes a position with the given coordinates
-     * @param x coordinate
-     * @param y coordinate
+     * Costruttore della classe per passare le coordinate x e y della posizione.
+     * @param x
+     * @param y
      */
     public Position(int x, int y){
         this.x = x;
@@ -26,66 +20,34 @@ public class Position {
     }
 
     /**
-     * Set the x coordinate of the position
-     * @param x coordinate
-    */
+     * imposta la coordinata x della posizione
+     * @param x
+     */
     public void setX(int x){
         this.x = x;
     }
 
     /**
-     * Set the y coordinate of the position
-     * @param y position
+     * imposta la coordinata y della posizione
+     * @param y
      */
     public void setY(int y){
         this.y = y;
     }
 
     /**
-     * Returns the x coordinate
-     * @return x coordinate
+     * Restituisce la coordinata x
+     * @return coordinata x
      */
     public int getX(){
         return x;
     }
 
     /**
-     * Returns the y coordinate
-     * @return y coordinate
+     * Restituisce la coordinata y
+     * @return coordinata y
      */
     public int getY(){
         return y;
-    }
-
-    /**
-     * Compares two positions and returns true if they are the same
-     * @param obj
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!Position.class.isAssignableFrom(obj.getClass())) {
-            return false;
-        }
-        final Position other = (Position) obj;
-        if (this.x != other.x) {
-            return false;
-        }
-        if (this.y != other.y) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Calculates the distance between two positions
-     * @param position
-     */
-    public double distance(Position other){
-        int deltaX = this.x - other.x; // x2 - x1
-        int deltaY = this.y - other.y; // y2 - y1
-        return Math.sqrt(deltaX * deltaX + deltaY * deltaY); // sqrt((x2 - x1)^2 + (y2 - y1)^2)
     }
 }

@@ -1,32 +1,35 @@
 package com.maze.FactoryPattern;
 
-import java.util.Random;
+import com.maze.Interactors.ValueBox;
 
 /**
- * Class that represents the hard maze
- * It extends the Maze class
- * It generates the maze and the trapdoors
+ * Classe che implementa il labirinto difficile.
+ * Il labirinto difficile è un labirinto con dimensione 14x14 e con un numero di botole pari a 7.
+ * @see Maze
  */
 public class HardMaze extends Maze{
+    
+    
     /**
-     * Constructor of the class HardMaze that calls the constructor of the Maze class
+     * Costruttore della classe per passare la dimensione del labirinto.
      */
     public HardMaze(){
         super(14); // call the constructor of the Maze class with the dimension of 14
     }
 
     /**
-     * Generates the maze
-     */
+    * Metodo che genera il labirinto.
+    */
     public void generateMaze(){
-        Random random = new Random();
-        for(int i = 0; i < getDim(); i++){
-            for(int j = 0; j < getDim(); j++){
-                if(random.nextDouble() < 0.05 && getExitMaze().getX() != i && getExitMaze().getY() != j){
-                    generateRandomLine(i, j); //generate a random line wall in the maze
-                }
-            }
+        for(int i = getDim() - 1; i > 7;  i--){
+            getBox(i, 7).setValue(ValueBox.WALL);
         }
-        generateTrapdoors(7); // generate the trapdoors in the maze with a number of 7
+        for(int i = 10; i < getDim() -2; i++){
+            getBox(10, i).setValue(ValueBox.WALL);
+        }
+        for(int i = 6; i < getDim() - 1; i++){
+            getBox(3, i).setValue(ValueBox.WALL);
+        }
+        generateTrapdoors(7); // genera 7 botole
     }
 }

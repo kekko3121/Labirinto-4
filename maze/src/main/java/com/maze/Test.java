@@ -8,7 +8,7 @@ import com.maze.Strategy.*;
 public class Test {
 
     public static void main(String[] args) {
-        Maze rmaze = new MazeDifficultyLevel().createMaze(Hardships.EASY);
+        Maze rmaze = new MazeDifficulty().createMaze(Hardships.EASY);
 
         // Creazione del microrobot
         Microrobot microrobot = new Microrobot(new Position(1, 4), new OneMoveState(new OneMove(rmaze.getMaze(), rmaze.getExitMaze())));

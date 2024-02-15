@@ -4,44 +4,44 @@ import java.util.Random;
 
 import com.maze.Interactors.*;
 
+/**
+ * Classe astratta che rappresenta un labirinto.
+ * Implementa l'interfaccia IMaze
+ * @see IMaze
+ */
 public abstract class Maze implements IMaze {
-    
-    /**
-     * Matrix that represents the maze
-     */
-    private Box [][] maze;
-    
-    /**
-     * Dimension of the maze
-     */
-    private int dim;
 
-    /**
-     * Position of the exit of the maze
-     */
-    private Position exitMaze;
+    private Box [][] maze; // matrice di caselle che rappresenta il labirinto
+    
+    private int dim; // dimensione del labirinto
 
-    /**
-     * Initializes a maze with the given dimension
-     * @param dim
-     */
+    private Position exitMaze; // posizione dell'uscita del labirinto
+
+   /**
+    * Costruttore della classe Maze che inizializza la matrice del labirinto con caselle vuote
+    * @param dim
+    */
     public Maze(int dim){
-        maze = new Box[dim][dim];
-        for(int i = 0; i < dim; i++){
+        maze = new Box[dim][dim]; // inizializza la matrice del labirinto
+        for(int i = 0; i < dim; i++){ 
             for(int j = 0; j < dim; j++){
-                maze[i][j] = new Box(ValueBox.EMPTY, new Position(i,j));
+                maze[i][j] = new Box(ValueBox.EMPTY, new Position(i,j)); // inizializza la casella con valore EMPTY
             }
         }
-        this.dim = dim;
-        generateExit();
+        this.dim = dim; // inizializza la dimensione del labirinto
+        generateExit(); // genera l'uscita del labirinto
     }
 
+    /**
+     * Ritorna il labirinto
+     * @return
+     */
     public Box[][] getMaze(){
         return maze;
     }
 
     /**
-     * Returns the maze dimension
+     * Ritorna la dimensione del labirinto
      * @return
      */
     public int getDim(){
@@ -49,72 +49,32 @@ public abstract class Maze implements IMaze {
     }
 
     /**
-     * generate a random exit in the maze
+     * Genera l'uscita del labirinto
      */
     private void generateExit(){
-        int side = new Random().nextInt(4);
-        switch (side) {
-            case 0:
-                exitMaze = new Position(0, new Random().nextInt(dim));
-                break;
-            case 1:
-                exitMaze = new Position(dim-1, new Random().nextInt(dim));
-                break;
-            case 2:
-                exitMaze = new Position(new Random().nextInt(dim), 0);
-                break;
-            case 3:
-                exitMaze = new Position(new Random().nextInt(dim), dim-1);
-                break;
-            default:
-                break;
-        }
+        exitMaze = new Position(new Random().nextInt(dim), 0); // genera la posizione dell'uscita
     }
 
     /**
-     * Generates a random line in the maze
-     * @param startX
-     * @param startY
-     */
-    protected void generateRandomLine(int startX, int startY){
-        // generate a random line
-        boolean horizontal = new Random().nextBoolean();
-        int size = 2 + new Random().nextInt(5); // size of the line (2-6)
-        if(horizontal){ // horizontal line
-            for(int j = startY; j < Math.min(startY + size, getDim()); j++){ // min(startY + size, getDim()) to avoid out of bounds
-                if (j < getDim()){ // check if the index is in the maze
-                    getMaze()[startX][j].setValue(ValueBox.WALL); // set the value of the box to WALL
-                }
-            }
-        }
-        else{ // vertical line
-            for(int i = startX; i < Math.min(startX + size, getDim()); i++){
-                if (i < getDim()){
-                    getMaze()[i][startY].setValue(ValueBox.WALL);
-                }
-            }
-        }
-    }
-
-    /**
-     * Generates the trapdoors in the maze
+     * Genera le botole nel labirinto
+     * @param ntrapdoors
      */
     protected void generateTrapdoors(int ntrapdoors){
-        Random random = new Random(); // random number generator to generate the trapdoors
-        int trapdoorsPlaced = 0; // number of trapdoors placed
-        while (trapdoorsPlaced < ntrapdoors) { // while the number of trapdoors placed
-            int x = random.nextInt(getDim()); // generate a random x coordinate
-            int y = random.nextInt(getDim()); // generate a random y coordinate
-            // if the value of the box is empty and the position is not the exit
-            if (getMaze()[x][y].getValue() == ValueBox.EMPTY && getExitMaze().getX() != x && getExitMaze().getY() != y){
-                getMaze()[x][y].setValue(ValueBox.HATCH); // set the value of the box to HATCH
-                trapdoorsPlaced++; // increment the number of trapdoors placed
+        Random random = new Random();
+        int trapdoorsPlaced = 0; // numero di botole piazzate
+        while (trapdoorsPlaced < ntrapdoors) { // finchè non sono state piazzate tutte le botole
+            int x = random.nextInt(dim); // genera una coordinata x casuale
+            int y = random.nextInt(dim); // genera una coordinata y casuale
+            // se la casella è vuota e non è l'uscita
+            if (maze[x][y].getValue() == ValueBox.EMPTY && exitMaze.getX() != x && exitMaze.getY() != y){
+                maze[x][y].setValue(ValueBox.HATCH); // piazza la botola
+                trapdoorsPlaced++; // incrementa il numero di botole piazzate
             }
         }
     }
 
     /**
-     * Returns the exit of the maze
+     * Ritorna la posizione dell'uscita del labirinto
      * @return
      */
     public Position getExitMaze(){
@@ -122,8 +82,19 @@ public abstract class Maze implements IMaze {
     }
 
     /**
-     * abstract method that generates the maze,
-     * it is implemented in the subclasses
+     * Ritorna la casella del labirinto in posizione x,y
+     * @param x
+     * @param y
+     * @return
+     */
+    public Box getBox(int x, int y){
+        return maze[x][y];
+    
+    }
+
+    /**
+     * Metodo astratto che genera il labirinto
+     * Verrà implementato dalle classi figlie
      */
     public abstract void generateMaze();
 }

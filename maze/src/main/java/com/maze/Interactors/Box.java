@@ -1,24 +1,19 @@
 package com.maze.Interactors;
 
 /**
- * Class that represents a box in the maze
+ * Classe che rappresenta una casella del labirinto.
+ * Una casella del labirinto è una casella con un valore e una posizione.
  */
 public class Box {
-        
-        /**
-         * Value of the box
-         */
-        private ValueBox value;
+
+        private ValueBox value; // valore della casella
+
+        private Position position; // posizione della casella
 
         /**
-         * Position of the box  in the maze
-         */
-        private Position position;
-
-        /**
-         * Initializes a box with the given value and position
-         * @param value of the box
-         * @param position of the box
+         * Costruttore della classe per passare il valore e la posizione della casella.
+         * @param value
+         * @param position
          */
         public Box(ValueBox value, Position position){
             this.value = value;
@@ -26,7 +21,7 @@ public class Box {
         }
         
         /**
-         * Returns the value of the box
+         * Restituisce il valore della casella
          * @return
          */
         public ValueBox getValue(){
@@ -34,7 +29,7 @@ public class Box {
         }
         
         /**
-         * Returns the position of the box
+         * Restituisce la posizione della casella
          * @return
          */
         public Position getPosition(){
@@ -42,7 +37,7 @@ public class Box {
         }
         
         /**
-         * Sets the value of the box
+         * imposta il valore della casella
          * @param value
          */
         public void setValue(ValueBox value){
@@ -50,7 +45,7 @@ public class Box {
         }
         
         /**
-         * Sets the position of the box
+         * imposta la posizione della casella
          * @param position
          */
         public void setPosition(Position position){
