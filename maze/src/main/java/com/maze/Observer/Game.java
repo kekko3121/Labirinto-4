@@ -1,9 +1,5 @@
 package com.maze.Observer;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-
 import com.maze.FactoryPattern.Maze;
 import com.maze.FactoryPattern.MazeDifficulty;
 import com.maze.Interactors.Hardships;
@@ -13,50 +9,38 @@ import com.maze.State.OneMoveState;
 import com.maze.Strategy.OneMove;
 import com.maze.Interactors.Box;
 
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Classe per gestire il gioco,
- * crea un labirinto, 
+ * crea un labirinto,
  */
-public class Game implements Observable{
+public class Game implements Observable {
 
     private Maze maze; // Oggetto classe labirinto
 
-    private ArrayList<Microrobot> microrobot; // Il microrobot che si muove nel labirinto
+    private ArrayList<Microrobot> microrobots; // Elenco dei microrobot nel labirinto
 
     private ArrayList<PositionSubcriber> subscribers; // Lista degli iscritti alla "newsletter" del gioco
-    
-    private Boolean firsMove; // Variabile per gestire il primo movimento del microrobot
 
     /**
-     * Costruttore per prendere in input la difficolta' del labirinto passata come enumerazione
+     * Costruttore per prendere in input la difficoltà del labirinto passata come enumerazione
      * In base alla difficoltà scelta, crea il labirinto richiamando il Factory Method
      */
-    public Game(Hardships h){
+    public Game(Hardships h) {
         this.maze = new MazeDifficulty().createMaze(h);
-        assert maze != null; // Verifica che il labirinto sia stato creato
-        this.microrobot = new ArrayList<>();
+        this.microrobots = new ArrayList<>();
         this.subscribers = new ArrayList<>();
-        this.firsMove = true;
-    }
-
-    /**
-     * Metodo per aggiungere un microrobot al gioco in base al numero passato come parametro
-     * @param n
-     */
-    public void addMicrorobot(int n){
-        for(int i = 0; i < n; i++){
-            Position p = new Position(ThreadLocalRandom.current().nextInt(maze.getDim()- 1), ThreadLocalRandom.current().nextInt(maze.getDim() -1));
-            this.microrobot.add(new Microrobot(p, new OneMoveState(new OneMove(maze.getMaze(), maze.getExitMaze()))));
-        }
     }
 
     @Override
     /**
      * Metodo per aggiungere un iscritto alla "newsletter" del gioco
-     * @param s
+     * @param subscriber
      */
-    public void subscribe(PositionSubcriber subcriber){
-        subscribers.add(subcriber);
+    public void subscribe(PositionSubcriber subscriber) {
+        subscribers.add(subscriber);
     }
 
     @Override
@@ -64,27 +48,51 @@ public class Game implements Observable{
      * Metodo per aggiornare tutti gli iscritti alla "newsletter" del gioco,
      * notificando loro la posizione e lo stato del microrobot, cambio di stato del labirinto e delle celle.
      */
-    public void notifySubscribers(){
-        for(PositionSubcriber s : subscribers){
-            s.update(this.getMaze(), this.microrobot.getPosition(), this.microrobot.getMicroRobotState());
+    public void notifySubscribers() {
+        for (PositionSubcriber subscriber : subscribers) {
+            for (Microrobot microrobot : microrobots) {
+                subscriber.update(this.maze.getMaze(), microrobot.getPosition(), microrobot.getMicroRobotState());
+            }
         }
     }
 
     /**
-     * Metodo per restituire il labirinto
+     * Metodo per aggiungere microrobot al gioco in base al numero passato come parametro
+     * @param n Numero di microrobot da aggiungere
      */
-    public Box[][] getMaze(){
-        return this.maze.getMaze();
+    public void addMicrorobots(int n) {
+        for (int i = 0; i < n; i++) {
+            Position position = generateRandomPosition();
+            Microrobot microrobot = new Microrobot(position, new OneMoveState(new OneMove(maze.getMaze(), maze.getExitMaze())));
+            microrobots.add(microrobot);
+        }
     }
 
     /**
-     * Metodo per restituire la Posizione di uscita del labirinto
+     * Metodo per generare una posizione casuale all'interno del labirinto.
+     * @return Una posizione casuale valida all'interno del labirinto.
      */
-    public Position getExitMaze(){
-        return this.maze.getExitMaze();
+    private Position generateRandomPosition() {
+        int x = ThreadLocalRandom.current().nextInt(maze.getDim());
+        int y = ThreadLocalRandom.current().nextInt(maze.getDim());
+        return new Position(x, y);
     }
-    
+
     /**
-     * Metodo per calcolare la prossima mossa del microrobot
+     * Metodo per muovere i microrobot nel labirinto e notificare gli iscritti.
      */
+    public void moveMicrorobots() {
+        for (Microrobot microrobot : microrobots) {
+            microrobot.move();
+        }
+        notifySubscribers();
+    }
+
+    /**
+     * Restituisce il labirinto del gioco.
+     * @return Il labirinto del gioco.
+     */
+    public Box[][] getMaze() {
+        return maze.getMaze();
+    }
 }
