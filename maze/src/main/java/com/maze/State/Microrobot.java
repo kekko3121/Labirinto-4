@@ -52,4 +52,12 @@ public class Microrobot {
     public IState getMicroRobotState(){
         return this.microRobotState;
     }
+
+    /**
+     * Metodo per muovere il microrobot.
+     * @param microRobotState
+     */
+    public void move(){
+        this.setActualPosition(this.microRobotState.doAction(actualPosition));
+    }
 }
