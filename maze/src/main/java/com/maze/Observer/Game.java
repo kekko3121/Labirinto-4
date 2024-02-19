@@ -1,26 +1,26 @@
 package com.maze.Observer;
 
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+
 import com.maze.FactoryPattern.Maze;
 import com.maze.FactoryPattern.MazeDifficulty;
 import com.maze.Interactors.Hardships;
 import com.maze.Interactors.Position;
+import com.maze.Interactors.ValueBox;
 import com.maze.State.Microrobot;
 import com.maze.State.OneMoveState;
 import com.maze.Strategy.OneMove;
 import com.maze.Interactors.Box;
 
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-
 /**
- * Classe per gestire il gioco,
- * crea un labirinto,
+ * Classe per gestire il gioco, crea un labirinto,
  */
 public class Game implements Observable {
 
     private Maze maze; // Oggetto classe labirinto
 
-    private ArrayList<Microrobot> microrobots; // Elenco dei microrobot nel labirinto
+    private ArrayList<Microrobot> microrobots; // Il microrobot che si muove nel labirinto
 
     private ArrayList<PositionSubcriber> subscribers; // Lista degli iscritti alla "newsletter" del gioco
 
@@ -51,48 +51,62 @@ public class Game implements Observable {
     public void notifySubscribers() {
         for (PositionSubcriber subscriber : subscribers) {
             for (Microrobot microrobot : microrobots) {
-                subscriber.update(this.maze.getMaze(), microrobot.getPosition(), microrobot.getMicroRobotState());
+                subscriber.update(this.getMaze(), microrobot.getPosition(), microrobot.getMicroRobotState());
+            }
+        }
+    }
+    public void addMicrorobots(int n) {
+        for (int i = 0; i < n; i++) {
+            Position p = getRandomEmptyPosition();
+            if (p != null) {
+                Microrobot microrobot = new Microrobot(p, new OneMoveState(new OneMove(maze.getMaze(), maze.getExitMaze())));
+                microrobots.add(microrobot);
+            } else {
+                // Gestire il caso in cui non ci siano posizioni vuote disponibili
+                System.out.println("Non ci sono posizioni vuote disponibili per spawnare il microrobot.");
+                break; // Esci dal loop
             }
         }
     }
 
-    /**
-     * Metodo per aggiungere microrobot al gioco in base al numero passato come parametro
-     * @param n Numero di microrobot da aggiungere
-     */
-    public void addMicrorobots(int n) {
-        for (int i = 0; i < n; i++) {
-            Position position = generateRandomPosition();
-            Microrobot microrobot = new Microrobot(position, new OneMoveState(new OneMove(maze.getMaze(), maze.getExitMaze())));
-            microrobots.add(microrobot);
+    private Position getRandomEmptyPosition() {
+        int maxAttempts = maze.getDim() * maze.getDim(); // Numero massimo di tentativi
+        int attempts = 0;
+        while (attempts < maxAttempts) {
+            Position p = new Position(ThreadLocalRandom.current().nextInt(maze.getDim() - 1), ThreadLocalRandom.current().nextInt(maze.getDim() - 1));
+            // Verifica se la posizione è all'interno del labirinto e non è un muro e non è occupata da un altro microrobot
+            if (p.getX() >= 0 && p.getX() < maze.getDim() && p.getY() >= 0 && p.getY() < maze.getDim() && maze.getMaze()[p.getX()][p.getY()].getValue() != ValueBox.WALL && !isMicrorobotAtPosition(p)) {
+                return p; // Restituisci la posizione vuota valida
+            }
+            attempts++;
         }
+        return null; // Nessuna posizione vuota valida trovata dopo il numero massimo di tentativi
     }
 
-    /**
-     * Metodo per generare una posizione casuale all'interno del labirinto.
-     * @return Una posizione casuale valida all'interno del labirinto.
-     */
-    private Position generateRandomPosition() {
-        int x = ThreadLocalRandom.current().nextInt(maze.getDim());
-        int y = ThreadLocalRandom.current().nextInt(maze.getDim());
-        return new Position(x, y);
-    }
 
-    /**
-     * Metodo per muovere i microrobot nel labirinto e notificare gli iscritti.
-     */
-    public void moveMicrorobots() {
-        for (Microrobot microrobot : microrobots) {
-            microrobot.move();
+    private boolean isMicrorobotAtPosition(Position p) {
+        // Verifica se c'è un microrobot nella posizione specificata
+        for (Microrobot robot : microrobots) {
+            if (robot.getPosition().equals(p)) {
+                return true;
+            }
         }
-        notifySubscribers();
+        return false;
     }
 
     /**
-     * Restituisce il labirinto del gioco.
-     * @return Il labirinto del gioco.
+     * Metodo per restituire la posizione del microrobot
+     * @param n
+     * @return microrobot position
+     */
+    public Position getMicrorobotPosition(int n){
+        return this.microrobots.get(n).getPosition();
+    }
+
+    /**
+     * Metodo per restituire il labirinto
      */
     public Box[][] getMaze() {
-        return maze.getMaze();
+        return this.maze.getMaze();
     }
 }
