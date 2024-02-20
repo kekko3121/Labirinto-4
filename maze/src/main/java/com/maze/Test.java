@@ -1,24 +1,21 @@
 package com.maze;
 
-import com.maze.FactoryPattern.*;
 import com.maze.Interactors.*;
-import com.maze.State.*;
-import com.maze.Strategy.*;
+import com.maze.Observer.*;
 
 public class Test {
 
     public static void main(String[] args) {
-        Maze rmaze = new MazeDifficulty().createMaze(Hardships.EASY);
+        Game game = new Game(Hardships.EASY, 1); // Crea il gioco con un microrobot
 
-        // Creazione del microrobot
-        Microrobot microrobot = new Microrobot(new Position(1, 4), new OneMoveState(new OneMove(rmaze.getMaze(), rmaze.getExitMaze())));
+        // Iscrizione al gioco per ricevere gli aggiornamenti sulle posizioni dei microrobot
+        ConcreteGame concreteGame = new ConcreteGame();
+        game.subscribe(concreteGame);
 
         // Movimento del microrobot nel labirinto
-        System.out.println("Posizione iniziale del microrobot: " + microrobot.getPosition().getX() + " " + microrobot.getPosition().getY());
-        while (!microrobot.getPosition().equals(rmaze.getExitMaze())) {
-            Position nextPosition = microrobot.getMicroRobotState().doAction(microrobot.getPosition());
-            microrobot.setActualPosition(nextPosition);
-            System.out.println("Microrobot si è spostato a: " + microrobot.getPosition().getX() + " " + microrobot.getPosition().getY());
+        System.out.println("Posizione iniziale del microrobot: " + game.getMicrorobotPosition(0).getX() + " " + game.getMicrorobotPosition(0).getY());
+        while (!game.getMicrorobotPosition(0).equals(game.getExitMaze())) {
+            game.moveMicrorobots(); // Muove il microrobot
         }
         System.out.println("Microrobot ha raggiunto l'uscita!");
     }

@@ -62,7 +62,7 @@ public class Game implements Observable {
      * Metodo per aggiungere i microrobot al labirinto
      * @param n
      */
-    private void addMicrorobots(int n) {
+    public void addMicrorobots(int n) {
         for (int i = 0; i < n; i++) {
             Position p = getRandomEmptyPosition();
             if (p != null) {
