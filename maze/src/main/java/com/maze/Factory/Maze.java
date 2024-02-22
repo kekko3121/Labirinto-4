@@ -1,4 +1,4 @@
-package com.maze.FactoryPattern;
+package com.maze.Factory;
 
 import java.util.Random;
 

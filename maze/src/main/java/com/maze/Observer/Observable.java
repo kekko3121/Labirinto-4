@@ -8,7 +8,7 @@ public interface Observable {
     /**
      * Iscrive un oggetto PositionSubscriber alla "newsletter" dell' Observable
      */
-    public void subscribe(PositionSubcriber subscriber);
+    public void subscribe(PositionSubscriber subscriber);
 
     /**
      * Notifica tutti gli iscritti alla "newsletter" dell' Observable

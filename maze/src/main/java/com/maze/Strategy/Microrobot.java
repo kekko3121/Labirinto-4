@@ -1,4 +1,4 @@
-package com.maze.State;
+package com.maze.Strategy;
 
 import com.maze.Interactors.Position;
 
@@ -7,7 +7,7 @@ import com.maze.Interactors.Position;
  */
 public class Microrobot {
     
-    private IState microRobotState; // stato del microrobot
+    private IStrategy microRobotStrategy; // Strategia del microrobot
 
     private Position actualPosition; // posizione attuale del microrobot
 
@@ -16,9 +16,9 @@ public class Microrobot {
      * @param actualPosition
      * @param microRobotState
      */
-    public Microrobot(Position actualPosition, IState microRobotState){
+    public Microrobot(Position actualPosition, IStrategy microRobotStrategy){
         this.actualPosition = actualPosition;
-        this.microRobotState = microRobotState;
+        this.microRobotStrategy = microRobotStrategy;
     }
 
     /**
@@ -38,26 +38,25 @@ public class Microrobot {
     }
 
     /**
-     * Cambia lo stato del microrobot.
-     * @param microRobotState
+     * Cambia la strategia del microrobot.
+     * @param microRobotStrategy
      */
-    public void setMicroRobotState(IState microRobotState){
-        this.microRobotState = microRobotState;
+    public void setMicroRobotStrategy(IStrategy microRobotStrategy){
+        this.microRobotStrategy = microRobotStrategy;
     }
 
     /**
-     * Restituisce lo stato del microrobot.
+     * Restituisce la strategia del microrobot.
      * @return
      */
-    public IState getMicroRobotState(){
-        return this.microRobotState;
+    public IStrategy getMicroRobotStrategy(){
+        return this.microRobotStrategy;
     }
 
     /**
      * Metodo per muovere il microrobot.
-     * @param microRobotState
      */
     public void move(){
-        this.setActualPosition(this.microRobotState.doAction(actualPosition));
+        this.setActualPosition(this.microRobotStrategy.nextMove(this.actualPosition));
     }
 }

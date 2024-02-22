@@ -1,4 +1,4 @@
-package com.maze.FactoryPattern;
+package com.maze.Factory;
 /**
  * Interfaccia per la generazione di un labirinto
  */
