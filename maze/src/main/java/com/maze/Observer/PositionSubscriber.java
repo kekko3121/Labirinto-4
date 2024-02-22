@@ -1,18 +1,16 @@
 package com.maze.Observer;
 
-import com.maze.Interactors.Position;
-import com.maze.Interactors.Box;
-import com.maze.Strategy.IStrategy;
+import java.util.List;
 
-/**
- * Interfaccia per rappresentare il Subscriber del pattern Observer
- */
+import com.maze.Interactors.Box;
+import com.maze.Strategy.Microrobot;
+
+
 public interface PositionSubscriber {
     /**
      * Metodo per aggiornare lo stato del gioco
-     * @param maze Rapresenta il labirinto
-     * @param position Rappresenta la posizione del microrobot
-     * @param State Rappresenta lo stato del microrobot
+     * @param maze Rappresenta il labirinto
+     * @param microrobotInfo Lista di informazioni sui microrobot
      */
-    public void update(Box[][] maze, Position position, IStrategy Strategy);
+    public void update(Box[][] maze, List<Microrobot> microrobotInfo);
 }
