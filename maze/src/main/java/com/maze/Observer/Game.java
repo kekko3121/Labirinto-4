@@ -13,26 +13,44 @@ import com.maze.Interactors.Hardships;
 import com.maze.Interactors.Position;
 import com.maze.Interactors.ValueBox;
 
+/**
+ * Classe per creare e gestire il gioco
+ * @see Observable
+ */
 public class Game implements Observable {
+
     private Maze maze; // labirinto
     
     private List<Microrobot> microrobots; // microrobots - i giocatori all'interno del labirinto
 
     private List<MicrorobotPosition> observers; // Array list per aggiornare tutte le classi appartenenti alla newsletter
 
-    public Game(Hardships hardships, int n) {
-        maze = new MazeDifficulty().createMaze(hardships);
-        microrobots = new ArrayList<>();
-        observers = new ArrayList<>();
+    private GameStateMemento previousState; // Memento per salvare lo stato del gioco
+
+    /**
+     * Costruttore per inizializzare il labirinto con la difficolta e il numero microrobot scelto dall'utente
+     * @param hardships
+     */
+    public Game(Hardships hardships) {
+        maze = new MazeDifficulty().createMaze(hardships); // crea il labirinto con la difficoltà scelta
+        microrobots = new ArrayList<>(); // inizializza la lista dei microrobot
+        observers = new ArrayList<>(); // inizializza la lista degli osservatori
 
         // Assicurarsi che il labirinto sia stato creato
         assert maze != null;
     }
 
+    /**
+     * Metodo per iscrivere un osservatore alla newsletter
+     * @param observer
+     */
     public void subscribe(MicrorobotPosition observer) {
         observers.add(observer);
     }
 
+    /**
+     * Metodo per notificare tutti gli osservatori iscritti alla newsletter
+     */
     public void notifyObservers() {
         for (MicrorobotPosition observer : observers) {
             observer.update(microrobots, maze.getMaze());
@@ -43,10 +61,16 @@ public class Game implements Observable {
         return maze.getMaze();
     }
 
+    /*
+     * Metodo per restituire la posizione di un microrobot
+     */
     public Position getMicrorobotPosition(int i){
         return microrobots.get(i).getPosition();
     }
 
+    /**
+     * Metodo per aggiungere un microrobot all'interno del labirinto
+     */
     public void addMicrorobot() {
         Position newPosition;
 
@@ -56,16 +80,24 @@ public class Game implements Observable {
         microrobots.add(new Microrobot(newPosition, new OneMove(maze.getMaze(), maze.getExitMaze())));
     }
 
+    /**
+     * Metodo per verificare se la posizione è valida
+     * @param position
+     * @return
+     */
     private boolean isValidPosition(Position position) {
 
+        // Verifica se la posizione è al di fuori del labirinto
         if (position.getX() < 0 || position.getX() >= maze.getDim() || position.getY() < 0 || position.getY() >= maze.getDim()) {
             return false; // La posizione è al di fuori del labirinto
         }
 
+        // Verifica se la posizione è una botola o un muro
         if (maze.getBox(position.getX(), position.getY()).getValue() != ValueBox.EMPTY) {
             return false; // La casella non è vuota
         }
 
+        // Verifica se la posizione è già occupata da un altro microrobot
         for (Microrobot microrobot : microrobots) {
             if (microrobot.getPosition().equals(position)) {
                 return false; // La posizione è già occupata da un altro microrobot
@@ -75,13 +107,16 @@ public class Game implements Observable {
         return true;
     }
 
+    /**
+     * Metodo per muovere il microrobot all'interno del labirinto
+     */
     public void moveMicrorobot() {
-        for (Microrobot microrobot : microrobots) {
-            Position currentPosition = microrobot.getPosition();
-            Position newPosition = microrobot.getMicroRobotStrategy().nextMove(currentPosition);
-    
+        for (Microrobot microrobot : microrobots) { // Per ogni microrobot
+            Position newPosition = microrobot.getMicroRobotStrategy().nextMove(microrobot.getPosition());
+
+            // Verifica se la nuova posizione è valida
             if (isValidPosition(newPosition)) {
-                microrobot.move();
+                microrobot.move(); // Muove il microrobot nella nuova posizione
     
                 // Verifica se la nuova posizione è una botola
                 if (maze.getBox(newPosition.getX(), newPosition.getY()).getValue() == ValueBox.HATCH) {
@@ -90,10 +125,83 @@ public class Game implements Observable {
                         newPosition = new Position(ThreadLocalRandom.current().nextInt(maze.getDim()), ThreadLocalRandom.current().nextInt(maze.getDim()));
                     } while (!isValidPosition(newPosition));
                     
-                    // Muovi il microrobot nella nuova posizione
+                    // Muove il microrobot nella nuova posizione
                     microrobot.setActualPosition(newPosition);
                 }
             }
+        }
+    }
+
+    /**
+     * Metodo per salvare lo stato attuale del gioco
+     */
+    public void saveState() {
+        previousState = new GameStateMemento(new ArrayList<>(microrobots), copyMaze());
+    }
+
+    /** 
+     * Metodo per ripristinare lo stato precedente del gioco
+    */
+    public void restoreState() {
+        if (previousState != null) {
+            microrobots.clear();
+            microrobots.addAll(previousState.getMicrorobots());
+            copyMazeData(previousState.getMaze(), maze.getMaze());
+        }
+    }
+
+    /**
+     * Metodo per copiare il labirinto
+     * @return
+     */
+    private Box[][] copyMaze() {
+        Box[][] newMaze = new Box[maze.getMaze().length][maze.getMaze()[0].length];
+        copyMazeData(maze.getMaze(), newMaze);
+        return newMaze;
+    }
+
+    /**
+     * Metodo per copiare il labirinto
+     * @param source
+     * @param destination
+     */
+    private void copyMazeData(Box[][] source, Box[][] destination) {
+        for (int i = 0; i < source.length; i++) {
+            System.arraycopy(source[i], 0, destination[i], 0, source[i].length);
+        }
+    }
+
+    /**
+     * Classe per salvare lo stato del gioco
+     */
+    public class GameStateMemento {
+        private final List<Microrobot> microrobots; // salvare lo stato dei microrobots
+        private final Box[][] maze; // salvare lo stato del labirinto
+
+        /**
+         * Costuttore per passare lo stato del gioco
+         * @param microrobots
+         * @param maze
+         */
+        public GameStateMemento(List<Microrobot> microrobots, Box[][] maze) {
+            this.microrobots = microrobots;
+            this.maze = maze;
+        }
+
+        /**
+         * Metodo per restituire lo stato dei microrobots
+         * @return
+         */
+        public List<Microrobot> getMicrorobots() {
+            return microrobots;
+        }
+
+        /**
+         * Metodo per restituire lo stato del labirinto
+         * @return
+         */
+        public Box[][] getMaze() {
+            return maze;
         }
     }
 }
