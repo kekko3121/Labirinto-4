@@ -1,5 +1,6 @@
 package com.progiii.progetto.progetto;
 
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -9,7 +10,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -45,6 +49,14 @@ public class HelloController {
 
     @FXML
     private ProgressBar progressBar;
+
+    @FXML
+    TextField name;
+    @FXML
+    javafx.scene.control.TextField lastName;
+
+    @FXML
+    private ChoiceBox<String> level;
 
 
 
@@ -110,34 +122,47 @@ public class HelloController {
     @FXML
     private void goReady(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("score.fxml"));
-            Parent root = fxmlLoader.load();
-            HelloController controller = fxmlLoader.getController();
-            controller.startProgressBar();
+            // Carica la pagina dei punteggi
+            FXMLLoader scoreLoader = new FXMLLoader(getClass().getResource("score.fxml"));
+            Parent scoreRoot = scoreLoader.load();
+            HelloController scoreController = scoreLoader.getController();
+            scoreController.startProgressBar();
             Stage stage = (Stage) readyButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            Scene scoreScene = new Scene(scoreRoot);
+
+            // Ottieni la difficoltà selezionata
+            String selectedLevel = level.getValue().toString();
+
+            // Imposta la pagina del labirinto in base alla difficoltà selezionata
+            String mazePage = "";
+            if (selectedLevel.equals("Easy")) {
+                mazePage = "easyMaze.fxml";
+            } else if (selectedLevel.equals("Medium")) {
+                mazePage = "mediumMaze.fxml";
+            } else if (selectedLevel.equals("Hard")) {
+                mazePage = "hardMaze.fxml";
+            }
+
+            // Carica la pagina del labirinto corrispondente
+            FXMLLoader mazeLoader = new FXMLLoader(getClass().getResource(mazePage));
+            Parent mazeRoot = mazeLoader.load();
+            Scene mazeScene = new Scene(mazeRoot);
+
+            // Mostra la pagina dei punteggi per 10 secondi
+            stage.setScene(scoreScene);
             stage.show();
 
-
-
+            // Passati 10 secondi, passa alla pagina del labirinto
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
-                try {
-                    FXMLLoader newLoader = new FXMLLoader(getClass().getResource("homepageswarm.fxml"));
-                    Parent newRoot = newLoader.load();
-                    Scene newScene = new Scene(newRoot);
-                    stage.setScene(newScene);
-                    stage.show();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                stage.setScene(mazeScene);
+                stage.show();
             }));
             timeline.play();
 
         } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
+            ex.printStackTrace();
+        }
+    }
 
 
     public void startProgressBar() {
@@ -163,4 +188,34 @@ public class HelloController {
         // Avvia il thread
         thread.start();
     }
+
+    @FXML
+    public void controllerText1(){
+        TextManager.textLength(name);
+        buttonManager(lastName,name );
+
+    }
+
+    /**
+     * Metodo per il controllo della corretta compilazione del campo "Cognome" nel main menu.*/
+    @FXML
+    public void controllerText2(){
+        TextManager.textLength(lastName);
+        buttonManager(name, lastName);
+
+    }
+
+    public void buttonManager(TextField text1, TextField text2)
+    {
+        if(TextManager.textConstraints(text1, text2))
+        {
+            readyButton.setDisable(true);
+        }
+        else
+        {
+            readyButton.setDisable(false);
+        }
+    }
+
+
 }
