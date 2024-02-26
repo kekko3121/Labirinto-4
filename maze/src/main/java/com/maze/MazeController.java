@@ -1,4 +1,4 @@
-package com.progiii.progetto.progetto;
+package com.maze;
 
 
 import javafx.animation.KeyFrame;
@@ -13,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -21,10 +20,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import javafx.scene.control.ProgressBar;
 
 
-public class HelloController {
+public class MazeController {
 
     @FXML
     private Button helpButton;
@@ -125,7 +125,7 @@ public class HelloController {
             // Carica la pagina dei punteggi
             FXMLLoader scoreLoader = new FXMLLoader(getClass().getResource("score.fxml"));
             Parent scoreRoot = scoreLoader.load();
-            HelloController scoreController = scoreLoader.getController();
+            MazeController scoreController = scoreLoader.getController();
             scoreController.startProgressBar();
             Stage stage = (Stage) readyButton.getScene().getWindow();
             Scene scoreScene = new Scene(scoreRoot);
@@ -216,6 +216,4 @@ public class HelloController {
             readyButton.setDisable(false);
         }
     }
-
-
 }

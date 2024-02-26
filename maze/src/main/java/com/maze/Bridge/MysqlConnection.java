@@ -5,24 +5,36 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Classe per la connessione al database MySQL
+ */
 public class MysqlConnection implements IConnection{
     
-    private final String URL;
-    private final String USER;
-    private final String PASSWORD;
+    private final String URL; // URL del database
+    private final String USER; // Username dell'account del database
+    private final String PASSWORD; // Password dell'account del database
 
-    private Connection connection;
+    private Connection connection; // Interfaccia per implementare la connessione al database
 
+    /**
+     * Costruttore inizializzare la connessione al database MySQL
+     * @param url
+     * @param user
+     * @param password
+     */
     public MysqlConnection(String url, String user, String password) {
         this.URL = url;
         this.USER = user;
         this.PASSWORD = password;
     }
 
+    /**
+     * Metodo per connettersi al database MySQL
+     */
     @Override
     public void connect(){
         try{
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            connection = DriverManager.getConnection(URL, USER, PASSWORD); // Connessione al database
             System.out.println("Connected to the database");
         }
         catch(SQLException e){
@@ -30,11 +42,15 @@ public class MysqlConnection implements IConnection{
         }
     }
 
+    /**
+     * Metodo per disconnettersi dal database MySQL
+     */
     @Override
     public void disconnect(){
         try{
+            // Se la connessione non è nulla e non è chiusa
             if (connection != null && !connection.isClosed()) {
-                connection.close();
+                connection.close(); // Chiusura della connessione
                 System.out.println("Disconnected from the database");
             }
         }
@@ -43,13 +59,19 @@ public class MysqlConnection implements IConnection{
         }
     }
 
+    /**
+     * Metodo per eseguire una query sul database MySQL
+     * @param query
+     * @return ResultSet
+     * @throws SQLException
+     */
     public ResultSet executeQuery(String query) throws SQLException {
-        ResultSet resultSet = null;
+        ResultSet resultSet = null; // Variabile per contenere il risultato della query
         try {
-            resultSet = connection.createStatement().executeQuery(query);
+            resultSet = connection.createStatement().executeQuery(query); // Esecuzione della query
         } catch (SQLException e) {
             System.err.println("Error executing query: " + e.getMessage());
         }
-        return resultSet;
+        return resultSet; // Ritorno del risultato della query
     }
 }

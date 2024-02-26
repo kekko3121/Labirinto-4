@@ -1,4 +1,4 @@
-package com.progiii.progetto.progetto;
+package com.maze;
 
 import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
