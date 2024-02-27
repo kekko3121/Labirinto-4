@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.paint.Color;
@@ -75,8 +74,6 @@ public class MazeController {
     private Game instance;
 
     private UpdateGame updateIstance;
-
-    private int steps = 0;
 
     private final MazeCommand command;
 
