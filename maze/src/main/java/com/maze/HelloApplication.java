@@ -2,7 +2,6 @@ package com.maze;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -14,7 +13,7 @@ public class HelloApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
             FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("homepageswarm.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-        primaryStage.setTitle("MICROROBOT MAZE EXPLORER : SWARM EDITION");
+            primaryStage.setTitle("MICROROBOT MAZE EXPLORER : SWARM EDITION");
             primaryStage.setScene(scene);
             primaryStage.show();
         }

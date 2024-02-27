@@ -53,7 +53,10 @@ public class MazeController {
     private Button playButton;
 
     @FXML
-    private ImageView swarmRobot;
+    ArrayList<Rectangle> microrobot; // Rappresentazione grafica dei microrobot
+
+    @FXML
+    ArrayList<Rectangle> matrix; // Rappresentazione grafica del labirinto
 
     @FXML
     private ProgressBar progressBar;
@@ -67,10 +70,7 @@ public class MazeController {
     @FXML
     private ChoiceBox<String> level;
 
-    @FXML
-    ArrayList<Rectangle> matrix;
-
-    private Box[][] mazeField;
+    private Box[][] mazeField; // labirinto
 
     private Game instance;
 
@@ -87,9 +87,12 @@ public class MazeController {
     public void initialize(){
         instance = new Game(command.hardships); // difficoltà del gioco
         updateIstance = new UpdateGame(); // aggiornamento del gioco
-
+        name.setText(command.name + "\n" + command.surname); // Nome e cognome del player
     }
 
+    /**
+     * Metodo per rappresentare graficamente le botole del labirinto
+     */
     public void setHatch(){
         for(int i = 0; i < updateIstance.getDim(); i++){
             for(int j = 0; j < updateIstance.getDim(); j++){
@@ -135,14 +138,13 @@ public class MazeController {
     void showMultipage(ActionEvent event) {
 
     }
-//questo metodo ci permette di chiudere la finestra di navigazione quando si preme il pulsante QUIT
+    //questo metodo ci permette di chiudere la finestra di navigazione quando si preme il pulsante QUIT
     @FXML
     void quit(ActionEvent event) {
         Node source = (Node) event.getSource();// Ottiene il nodo sorgente dell'evento
         Stage stage = (Stage) source.getScene().getWindow();// Ottiene lo stage (finestra) corrispondente al nodo sorgente
         stage.close();// Chiude la finestra corrente
     }
-
 
     @FXML
     private void returntoHome(ActionEvent event) {
@@ -159,6 +161,10 @@ public class MazeController {
     }
     @FXML
     private void goReady(ActionEvent event) {
+        
+        instance.subscribe(updateIstance);
+
+        
         try {
             // Carica la pagina dei punteggi
             FXMLLoader scoreLoader = new FXMLLoader(getClass().getResource("score.fxml"));
