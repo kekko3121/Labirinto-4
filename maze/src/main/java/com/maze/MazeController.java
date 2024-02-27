@@ -21,10 +21,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.maze.Command.MazeCommand;
+
 import javafx.scene.control.ProgressBar;
 
 
 public class MazeController {
+
+    private MazeCommand command;
 
     @FXML
     private Button helpButton;
@@ -58,9 +62,9 @@ public class MazeController {
     @FXML
     private ChoiceBox<String> level;
 
-
-
-
+    public MazeController(MazeCommand command){
+        this.command = command;
+    }
 
     @FXML
     private void showPlaypage() {
