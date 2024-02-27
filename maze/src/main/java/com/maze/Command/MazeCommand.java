@@ -11,11 +11,11 @@ import javafx.event.Event;
  */
 public abstract class MazeCommand {
 
-    private String name; // Nome del player
-    private String surname; // Cognome del player
-    private String nickname; // Nickname del player
-    private String fxml; // FXML da caricare
-    protected Hardships hardships; // Difficoltà del labirinto
+    public String name; // Nome del player
+    public String surname; // Cognome del player
+    public String nickname; // Nickname del player
+    public String fxml; // FXML da caricare
+    public Hardships hardships; // Difficoltà del labirinto
 
     /**
      * Costruttore per passare i parametri del player e la difficoltà del labirinto

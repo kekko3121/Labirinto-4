@@ -1,4 +1,4 @@
-package com.progetto;
+package com.maze;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

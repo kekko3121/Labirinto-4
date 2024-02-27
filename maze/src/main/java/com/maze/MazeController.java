@@ -1,6 +1,5 @@
 package com.maze;
 
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -15,20 +14,25 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.paint.Color;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.shape.Rectangle;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import com.maze.Command.MazeCommand;
+import com.maze.Observer.Game;
+import com.maze.Observer.UpdateGame;
+import com.maze.Interactors.Box;
+import com.maze.Interactors.ValueBox;
 
-import javafx.scene.control.ProgressBar;
 
 
 public class MazeController {
-
-    private MazeCommand command;
 
     @FXML
     private Button helpButton;
@@ -56,14 +60,44 @@ public class MazeController {
 
     @FXML
     TextField name;
+
     @FXML
     javafx.scene.control.TextField lastName;
 
     @FXML
     private ChoiceBox<String> level;
 
+    @FXML
+    ArrayList<Rectangle> matrix;
+
+    private Box[][] mazeField;
+
+    private Game instance;
+
+    private UpdateGame updateIstance;
+
+    private int steps = 0;
+
+    private final MazeCommand command;
+
     public MazeController(MazeCommand command){
         this.command = command;
+    }
+
+    public void initialize(){
+        instance = new Game(command.hardships); // difficoltà del gioco
+        updateIstance = new UpdateGame(); // aggiornamento del gioco
+
+    }
+
+    public void setHatch(){
+        for(int i = 0; i < updateIstance.getDim(); i++){
+            for(int j = 0; j < updateIstance.getDim(); j++){
+                if(mazeField[i][j].getValue() == ValueBox.HATCH){
+                    matrix.get(i*updateIstance.getDim() + j).setFill(Color.BLUE);
+                }
+            }
+        }
     }
 
     @FXML
