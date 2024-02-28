@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.paint.Color;
@@ -23,6 +24,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import com.maze.Command.LabInvoker;
+import com.maze.Command.LoadEasyMaze;
+import com.maze.Command.LoadHardMaze;
+import com.maze.Command.LoadMediumMaze;
 import com.maze.Command.MazeCommand;
 import com.maze.Observer.Game;
 import com.maze.Observer.UpdateGame;
@@ -77,14 +82,20 @@ public class MazeController {
 
     private final MazeCommand command;
 
+    public MazeController(){
+        this.command = null;
+    }
+
     public MazeController(MazeCommand command){
         this.command = command;
     }
 
     public void initialize(){
-        instance = new Game(command.hardships); // difficoltà del gioco
-        updateIstance = new UpdateGame(); // aggiornamento del gioco
-        name.setText(command.name + "\n" + command.surname); // Nome e cognome del player
+        if(command != null){
+            instance = new Game(command.hardships); // difficoltà del gioco
+            updateIstance = new UpdateGame(); // aggiornamento del gioco
+            name.setText(command.name + "\n" + command.surname); // Nome e cognome del player
+        }
     }
 
     /**
@@ -156,12 +167,11 @@ public class MazeController {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void goReady(ActionEvent event) {
-        
-        instance.subscribe(updateIstance);
-
-        
+        LabInvoker invoker = new LabInvoker();
+            
         try {
             // Carica la pagina dei punteggi
             FXMLLoader scoreLoader = new FXMLLoader(getClass().getResource("score.fxml"));
@@ -173,30 +183,31 @@ public class MazeController {
 
             // Ottieni la difficoltà selezionata
             String selectedLevel = level.getValue().toString();
-
-            // Imposta la pagina del labirinto in base alla difficoltà selezionata
-            String mazePage = "";
+            
             if (selectedLevel.equals("Easy")) {
-                mazePage = "easyMaze.fxml";
+                invoker.execute(event, new LoadEasyMaze(name.getText(), lastName.getText(), null));
             } else if (selectedLevel.equals("Medium")) {
-                mazePage = "mediumMaze.fxml";
+                invoker.execute(event, new LoadMediumMaze(name.getText(), lastName.getText(), null));
             } else if (selectedLevel.equals("Hard")) {
-                mazePage = "hardMaze.fxml";
+                invoker.execute(event, new LoadHardMaze(name.getText(), lastName.getText(), null));
             }
 
-            // Carica la pagina del labirinto corrispondente
-            FXMLLoader mazeLoader = new FXMLLoader(getClass().getResource(mazePage));
-            Parent mazeRoot = mazeLoader.load();
-            Scene mazeScene = new Scene(mazeRoot);
-
-            // Mostra la pagina dei punteggi per 10 secondi
+            // Carica la pagina dei punteggi per 10 secondi
             stage.setScene(scoreScene);
             stage.show();
 
             // Passati 10 secondi, passa alla pagina del labirinto
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
-                stage.setScene(mazeScene);
-                stage.show();
+                stage.setScene(new Scene(new Pane())); // Carica una scena vuota per evitare di visualizzare la classifica
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("labirinto.fxml"));
+                    Parent labRoot = fxmlLoader.load();
+                    Scene labScene = new Scene(labRoot);
+                    stage.setScene(labScene);
+                    stage.show();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }));
             timeline.play();
 
@@ -233,7 +244,7 @@ public class MazeController {
     @FXML
     public void controllerText1(){
         TextManager.textLength(name);
-        buttonManager(lastName,name );
+        buttonManager(lastName, name);
 
     }
 

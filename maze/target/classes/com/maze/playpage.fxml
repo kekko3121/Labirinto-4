@@ -9,11 +9,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.FXCollections?>
 
-<AnchorPane maxHeight="1040.0" maxWidth="1880.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.progiii.progetto.progetto.HelloController">
+<AnchorPane maxHeight="1040.0" maxWidth="1880.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maze.MazeController">
    <children>
        <ImageView fitHeight="720.0" fitWidth="1295.0" pickOnBounds="true" preserveRatio="true">
        <image>
-           <Image url="@images/pageplay.png" />
+           <Image url="@../../images/pageplay.png" />
        </image>
        </ImageView>
       <ChoiceBox layoutX="134.0" layoutY="426.0" prefWidth="150.0">
@@ -45,7 +45,7 @@
            <effect>
                <ImageInput>
                    <source>
-                       <Image url="@images/ready_botton.png" />
+                       <Image url="@../../images/ready_botton.png" />
                    </source>
                </ImageInput>
            </effect>
@@ -55,7 +55,7 @@
            <effect>
                <ImageInput>
                    <source>
-                       <Image url="@images/return_button.png" />
+                       <Image url="@../../images/return_button.png" />
                    </source>
                </ImageInput>
            </effect>

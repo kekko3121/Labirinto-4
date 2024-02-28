@@ -23,8 +23,8 @@ public class LoadEasyMaze extends MazeCommand {
      * @param nickname
      * @param fxml
      */
-    public LoadEasyMaze(String name, String surname, String nickname, String fxml) {
-        super(name, surname, nickname, fxml);
+    public LoadEasyMaze(String name, String surname, String nickname) {
+        super(name, surname, nickname);
         this.hardships = Hardships.EASY;
     }
 

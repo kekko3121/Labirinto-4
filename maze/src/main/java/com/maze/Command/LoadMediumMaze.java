@@ -20,8 +20,8 @@ public class LoadMediumMaze extends MazeCommand {
      * @param nickname
      * @param fxml
      */
-    public LoadMediumMaze(String name, String surname, String nickname, String fxml) {
-        super(name, surname, nickname, fxml);
+    public LoadMediumMaze(String name, String surname, String nickname) {
+        super(name, surname, nickname);
         this.hardships = Hardships.MEDIUM;
     }
 

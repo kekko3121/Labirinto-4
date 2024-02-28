@@ -11,7 +11,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane maxHeight="1040.0" maxWidth="1880.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.progiii.progetto.progetto.HelloController">
+<AnchorPane maxHeight="1040.0" maxWidth="1880.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <Rectangle fx:id="Rectangle16" arcHeight="5.0" arcWidth="5.0" fill="#8d8d8d" height="50.0" layoutX="997.0" layoutY="457.0" stroke="BLACK" strokeType="INSIDE" width="50.0" />
     <Rectangle fx:id="Rectangle2" arcHeight="5.0" arcWidth="5.0" fill="#8d8d8d" height="50.0" layoutX="897.0" layoutY="307.0" stroke="BLACK" strokeType="INSIDE" width="50.0" />
     <Rectangle fx:id="Rectangle5" arcHeight="5.0" arcWidth="5.0" fill="#8d8d8d" height="50.0" layoutX="847.0" layoutY="357.0" stroke="BLACK" strokeType="INSIDE" width="50.0" />

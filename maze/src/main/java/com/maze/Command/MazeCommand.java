@@ -14,7 +14,6 @@ public abstract class MazeCommand {
     public String name; // Nome del player
     public String surname; // Cognome del player
     public String nickname; // Nickname del player
-    public String fxml; // FXML da caricare
     public Hardships hardships; // Difficoltà del labirinto
 
     /**
@@ -24,11 +23,10 @@ public abstract class MazeCommand {
      * @param nickname
      * @param hardships
      */
-    public MazeCommand(String name, String surname, String nickname, String fxml) {
+    public MazeCommand(String name, String surname, String nickname) {
         this.name = name;
         this.surname = surname;
         this.nickname = nickname;
-        this.fxml = fxml;
     }
 
     /**

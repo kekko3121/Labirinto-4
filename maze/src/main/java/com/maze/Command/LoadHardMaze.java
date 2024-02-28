@@ -21,8 +21,8 @@ public class LoadHardMaze extends MazeCommand{
      * @param nickname
      * @param fxml
      */
-    public LoadHardMaze(String name, String surname, String nickname, String fxml) {
-        super(name, surname, nickname, fxml);
+    public LoadHardMaze(String name, String surname, String nickname) {
+        super(name, surname, nickname);
         this.hardships = Hardships.HARD;
     }
 
