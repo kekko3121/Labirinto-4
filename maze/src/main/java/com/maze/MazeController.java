@@ -1,5 +1,6 @@
 package com.maze;
 
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -11,29 +12,24 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.paint.Color;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.shape.Rectangle;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 
-import com.maze.Command.LabInvoker;
 import com.maze.Command.LoadEasyMaze;
 import com.maze.Command.LoadHardMaze;
 import com.maze.Command.LoadMediumMaze;
 import com.maze.Command.MazeCommand;
-import com.maze.Observer.Game;
-import com.maze.Observer.UpdateGame;
-import com.maze.Interactors.Box;
-import com.maze.Interactors.ValueBox;
 
+import javafx.scene.control.ProgressBar;
+
+import com.maze.Command.LabInvoker;
 
 
 public class MazeController {
@@ -57,58 +53,29 @@ public class MazeController {
     private Button playButton;
 
     @FXML
-    ArrayList<Rectangle> microrobot; // Rappresentazione grafica dei microrobot
-
-    @FXML
-    ArrayList<Rectangle> matrix; // Rappresentazione grafica del labirinto
+    private ImageView swarmRobot;
 
     @FXML
     private ProgressBar progressBar;
 
     @FXML
-    TextField name;
-
-    @FXML
-    javafx.scene.control.TextField lastName;
+    TextField name, lastName, nickname;
 
     @FXML
     private ChoiceBox<String> level;
 
-    private Box[][] mazeField; // labirinto
+    private  MazeCommand command;
 
-    private Game instance;
+    private LabInvoker labInvoker = new LabInvoker();
 
-    private UpdateGame updateIstance;
 
-    private final MazeCommand command;
 
-    public MazeController(){
-        this.command = null;
-    }
-
-    public MazeController(MazeCommand command){
+    public MazeController(MazeCommand command) {
         this.command = command;
     }
 
-    public void initialize(){
-        if(command != null){
-            instance = new Game(command.hardships); // difficoltà del gioco
-            updateIstance = new UpdateGame(); // aggiornamento del gioco
-            name.setText(command.name + "\n" + command.surname); // Nome e cognome del player
-        }
-    }
-
-    /**
-     * Metodo per rappresentare graficamente le botole del labirinto
-     */
-    public void setHatch(){
-        for(int i = 0; i < updateIstance.getDim(); i++){
-            for(int j = 0; j < updateIstance.getDim(); j++){
-                if(mazeField[i][j].getValue() == ValueBox.HATCH){
-                    matrix.get(i*updateIstance.getDim() + j).setFill(Color.BLUE);
-                }
-            }
-        }
+    public MazeController() {
+        this.command = null;
     }
 
     @FXML
@@ -146,13 +113,14 @@ public class MazeController {
     void showMultipage(ActionEvent event) {
 
     }
-    //questo metodo ci permette di chiudere la finestra di navigazione quando si preme il pulsante QUIT
+//questo metodo ci permette di chiudere la finestra di navigazione quando si preme il pulsante QUIT
     @FXML
     void quit(ActionEvent event) {
         Node source = (Node) event.getSource();// Ottiene il nodo sorgente dell'evento
         Stage stage = (Stage) source.getScene().getWindow();// Ottiene lo stage (finestra) corrispondente al nodo sorgente
         stage.close();// Chiude la finestra corrente
     }
+
 
     @FXML
     private void returntoHome(ActionEvent event) {
@@ -167,11 +135,8 @@ public class MazeController {
             e.printStackTrace();
         }
     }
-
     @FXML
     private void goReady(ActionEvent event) {
-        LabInvoker invoker = new LabInvoker();
-            
         try {
             // Carica la pagina dei punteggi
             FXMLLoader scoreLoader = new FXMLLoader(getClass().getResource("score.fxml"));
@@ -180,42 +145,28 @@ public class MazeController {
             scoreController.startProgressBar();
             Stage stage = (Stage) readyButton.getScene().getWindow();
             Scene scoreScene = new Scene(scoreRoot);
-
+    
             // Ottieni la difficoltà selezionata
             String selectedLevel = level.getValue().toString();
-            
+    
             if (selectedLevel.equals("Easy")) {
-                invoker.execute(event, new LoadEasyMaze(name.getText(), lastName.getText(), null));
+                labInvoker.execute(event, new LoadEasyMaze(name.getText(), lastName.getText(), nickname.getText()));
             } else if (selectedLevel.equals("Medium")) {
-                invoker.execute(event, new LoadMediumMaze(name.getText(), lastName.getText(), null));
+                labInvoker.execute(event, new LoadMediumMaze(name.getText(), lastName.getText(), nickname.getText()));
             } else if (selectedLevel.equals("Hard")) {
-                invoker.execute(event, new LoadHardMaze(name.getText(), lastName.getText(), null));
+                labInvoker.execute(event, new LoadHardMaze(name.getText(), lastName.getText(), nickname.getText()));
             }
-
-            // Carica la pagina dei punteggi per 10 secondi
+    
+    
+            // Mostra la pagina dei punteggi
             stage.setScene(scoreScene);
             stage.show();
-
-            // Passati 10 secondi, passa alla pagina del labirinto
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
-                stage.setScene(new Scene(new Pane())); // Carica una scena vuota per evitare di visualizzare la classifica
-                try {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("labirinto.fxml"));
-                    Parent labRoot = fxmlLoader.load();
-                    Scene labScene = new Scene(labRoot);
-                    stage.setScene(labScene);
-                    stage.show();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }));
-            timeline.play();
-
+    
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
-
+    
 
     public void startProgressBar() {
         // Crea un nuovo Thread per l'incremento automatico

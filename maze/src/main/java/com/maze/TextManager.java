@@ -23,7 +23,7 @@ public abstract class TextManager {
      * del testo in entrambe le textfield contemporaneamente*/
     public static boolean textConstraints(TextField text1, TextField text2)
     {
-        if(!Objects.equals(text1.getText(), "") && !Objects.equals(text2.getText(), "")) {
+        if(!Objects.equals(text1.getText(), "") && !Objects.equals(text2.getText(), "")){
             return false;
         }
         else

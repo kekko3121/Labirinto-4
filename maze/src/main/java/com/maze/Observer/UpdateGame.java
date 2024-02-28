@@ -33,20 +33,6 @@ public class UpdateGame implements MicrorobotPosition {
         this.exMicrorobots = this.microrobots;
         this.microrobots = microrobots;
         this.maze = maze;
-
-        // Verifica le posizioni dei microrobot e aggiorna il labirinto
-        for(Microrobot microrobot : exMicrorobots){
-            if(microrobot != null && maze[microrobot.getPosition().getX()][microrobot.getPosition().getY()].getValue() != ValueBox.HATCH){
-                maze[microrobot.getPosition().getX()][microrobot.getPosition().getY()].setValue(ValueBox.EMPTY);
-            }
-        }
-
-        // Aggiorna le posizioni dei microrobot e il labirinto
-        for(Microrobot microrobot : microrobots){
-            if (maze[microrobot.getPosition().getX()][microrobot.getPosition().getY()].getValue() != ValueBox.HATCH){
-                maze[microrobot.getPosition().getX()][microrobot.getPosition().getY()].setValue(ValueBox.OCCUPIED);   
-            }
-        }
     }
 
     /**
