@@ -80,6 +80,10 @@ public class Game implements Observable {
         microrobots.add(new Microrobot(newPosition, new OneMove(maze.getMaze(), maze.getExitMaze())));
     }
 
+    public void removeMicrorobot(int i) {
+        microrobots.remove(i);
+    }
+
     /**
      * Metodo per verificare se la posizione è valida
      * @param position
@@ -130,6 +134,10 @@ public class Game implements Observable {
                 }
             }
         }
+    }
+
+    public Position getExitPosition() {
+        return maze.getExitMaze();
     }
 
     /**

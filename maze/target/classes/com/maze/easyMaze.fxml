@@ -14,9 +14,7 @@
 <?import java.util.ArrayList?>
 <?import javafx.scene.text.Font?>
 <AnchorPane maxHeight="1040.0" maxWidth="1880.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0"
-            prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.maze.MazeController">
-    <!-- Row 0 -->
+            prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
 
                 <Rectangle fx:id="Rectangle16" arcHeight="5.0" arcWidth="5.0" fill="#8d8d8d" height="50.0" layoutX="997.0" layoutY="457.0" stroke="BLACK" strokeType="INSIDE" width="50.0" />

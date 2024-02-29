@@ -1,23 +1,14 @@
 package com.maze.Command;
 
-import javafx.event.Event;
-import java.io.IOException;
+import com.maze.Interactors.Box;
+import com.maze.Interactors.Position;
 
-/**
- * Classe invoker per memorizzare il comando affinché possa essere eseguito 
- */
 public class LabInvoker {
 
-    private MazeCommand command; // Comando da eseguire
-
-    /**
-     * Metodo per eseguire il comando
-     * @param e
-     * @param command
-     * @throws IOException
-     */
-    public void execute(Event e, MazeCommand command) throws IOException {
+    private MazeCommand command;
+    
+    public void execute(Box[][] maze, Position exPosition, MazeCommand command){
         this.command = command;
-        this.command.loadMaze(e);
+        this.command.buildMaze(maze, exPosition);
     }
 }

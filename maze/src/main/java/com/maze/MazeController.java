@@ -13,7 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -21,15 +21,15 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
-import com.maze.Command.LoadEasyMaze;
-import com.maze.Command.LoadHardMaze;
-import com.maze.Command.LoadMediumMaze;
-import com.maze.Command.MazeCommand;
+import com.maze.Interactors.Box;
+import com.maze.Interactors.Hardships;
+import com.maze.Observer.Game;
+import com.maze.Observer.UpdateGame;
+import com.maze.Command.*;
 
 import javafx.scene.control.ProgressBar;
-
-import com.maze.Command.LabInvoker;
 
 
 public class MazeController {
@@ -62,20 +62,25 @@ public class MazeController {
     TextField name, lastName, nickname;
 
     @FXML
-    private ChoiceBox<String> level;
+    private ChoiceBox<String> level, robotNumber;
 
-    private  MazeCommand command;
+    @FXML
+    private ArrayList<ImageView> microrobot;
+
+    @FXML
+    private GridPane gridPane;
 
     private LabInvoker labInvoker = new LabInvoker();
 
+    private Game instance;
 
+    private UpdateGame updateInstance;
 
-    public MazeController(MazeCommand command) {
-        this.command = command;
-    }
+    private Box[][] maze;
 
     public MazeController() {
-        this.command = null;
+        gridPane = new GridPane();
+        microrobot = new ArrayList<>();
     }
 
     @FXML
@@ -109,6 +114,7 @@ public class MazeController {
 
             }
     }
+
     @FXML
     void showMultipage(ActionEvent event) {
 
@@ -120,7 +126,6 @@ public class MazeController {
         Stage stage = (Stage) source.getScene().getWindow();// Ottiene lo stage (finestra) corrispondente al nodo sorgente
         stage.close();// Chiude la finestra corrente
     }
-
 
     @FXML
     private void returntoHome(ActionEvent event) {
@@ -135,6 +140,7 @@ public class MazeController {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void goReady(ActionEvent event) {
         try {
@@ -145,28 +151,61 @@ public class MazeController {
             scoreController.startProgressBar();
             Stage stage = (Stage) readyButton.getScene().getWindow();
             Scene scoreScene = new Scene(scoreRoot);
-    
-            // Ottieni la difficoltà selezionata
-            String selectedLevel = level.getValue().toString();
-    
-            if (selectedLevel.equals("Easy")) {
-                labInvoker.execute(event, new LoadEasyMaze(name.getText(), lastName.getText(), nickname.getText()));
-            } else if (selectedLevel.equals("Medium")) {
-                labInvoker.execute(event, new LoadMediumMaze(name.getText(), lastName.getText(), nickname.getText()));
-            } else if (selectedLevel.equals("Hard")) {
-                labInvoker.execute(event, new LoadHardMaze(name.getText(), lastName.getText(), nickname.getText()));
-            }
-    
-    
+
             // Mostra la pagina dei punteggi
             stage.setScene(scoreScene);
             stage.show();
+
+            // Ottiene la difficoltà selezionata
+            String selectedLevel = level.getValue().toString();
+            if (selectedLevel.equals("Easy")) {
+                instance = new Game(Hardships.EASY);
+            } else if (selectedLevel.equals("Medium")) {
+                instance = new Game(Hardships.MEDIUM);
+            } else if (selectedLevel.equals("Hard")) {
+                instance = new Game(Hardships.HARD);
+            }
+
+            updateInstance = new UpdateGame();
+
+            for(int i = 0; i < Integer.parseInt(robotNumber.getValue()); i++)
+            {
+                instance.addMicrorobot();
+                 // Creazione e posizionamento dell'immagine del microrobot
+                ImageView microrobotImage = new ImageView(getClass().getResource("/images/microrobot.png").toString()); // Imposta il percorso dell'immagine
+                microrobotImage.setFitWidth(50); // Imposta la larghezza dell'immagine
+                microrobotImage.setFitHeight(50); // Imposta l'altezza dell'immagine
+                microrobotImage.setLayoutX(instance.getMicrorobotPosition(i).getX() * 50); // Modifica il fattore di scala in base alla larghezza delle caselle
+                microrobotImage.setLayoutY(instance.getMicrorobotPosition(i).getY() * 50); // Modifica il fattore di scala in base all'altezza delle caselle
+                microrobot.add(microrobotImage);
+            }
+
+            labInvoker.execute(instance.getMaze(), instance.getExitPosition(), new DrawMaze(name.getText(), lastName.getText(), nickname.getText(), gridPane));
+            
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
+                instance.notifyObservers();
+                instance.moveMicrorobot();
+                maze = updateInstance.getMaze();
+                instance.notifyObservers();
+
+                for(int i = 0; i < Integer.parseInt(robotNumber.getValue()); i++){
+                    if (instance.getMicrorobotPosition(i) == instance.getExitPosition()) {
+                        instance.removeMicrorobot(i);
+                        microrobot.remove(i);
+                    }
+
+                    microrobot.get(i).setLayoutX(instance.getMicrorobotPosition(i).getX() * 50);
+                    microrobot.get(i).setLayoutY(instance.getMicrorobotPosition(i).getY() * 50);
+                }
+
+                stage.setScene(new Scene(gridPane));
+            }));
+            timeline.play();
     
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
-    
 
     public void startProgressBar() {
         // Crea un nuovo Thread per l'incremento automatico
