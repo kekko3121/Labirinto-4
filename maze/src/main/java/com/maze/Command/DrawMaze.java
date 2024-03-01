@@ -25,11 +25,19 @@ public class DrawMaze extends MazeCommand {
 
                 if (isExternalWall(i, j, maze.length, exPosition)) {
                     rect.setFill(Color.GRAY); // Colore dei muri esterni
+                    rect.setStroke(Color.BLACK); // Bordo nero
+                    rect.setStrokeWidth(1.0);
+                    
+                    
                 } else {
                     if (maze[i][j].getValue() == ValueBox.WALL) {
                         rect.setFill(Color.BLACK); // Parete interna
+                        rect.setStroke(Color.BLACK); // Bordo nero
+                    rect.setStrokeWidth(1.0);
                     } else {
                         rect.setFill(Color.WHITE); // Passaggio
+                        rect.setStroke(Color.BLACK); // Bordo nero
+                    rect.setStrokeWidth(1.0);
                     }
                 }
                 mazeGrid.add(rect, j, i);
