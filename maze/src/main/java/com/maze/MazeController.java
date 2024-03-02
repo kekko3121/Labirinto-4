@@ -1,6 +1,7 @@
 package com.maze;
 
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -65,9 +67,6 @@ public class MazeController {
     private ChoiceBox<String> level, robotNumber;
 
     @FXML
-    private ArrayList<ImageView> microrobot;
-
-    @FXML
     private GridPane gridPane;
 
     private LabInvoker labInvoker = new LabInvoker();
@@ -78,9 +77,10 @@ public class MazeController {
 
     private Box[][] maze;
 
+    private int nmicrorobot;
+
     public MazeController() {
         gridPane = new GridPane();
-        microrobot = new ArrayList<>();
     }
 
     @FXML
@@ -151,6 +151,7 @@ public class MazeController {
             scoreController.startProgressBar();
             Stage stage = (Stage) readyButton.getScene().getWindow();
             Scene scoreScene = new Scene(scoreRoot);
+            Scene mazeScene = new Scene(gridPane);
 
             // Mostra la pagina dei punteggi
             stage.setScene(scoreScene);
@@ -168,40 +169,39 @@ public class MazeController {
 
             updateInstance = new UpdateGame();
 
-            for(int i = 0; i < Integer.parseInt(robotNumber.getValue()); i++)
-            {
+            labInvoker.execute(instance.getMaze(), instance.getExitPosition(), new DrawMaze(name.getText(), lastName.getText(), nickname.getText(), gridPane));
+
+            // Aggiungi i microrobot al labirinto
+            for (int i = 0; i < Integer.parseInt(robotNumber.getValue()); i++) {
                 instance.addMicrorobot();
-                 // Creazione e posizionamento dell'immagine del microrobot
-                ImageView microrobotImage = new ImageView(getClass().getResource("/images/microrobot.png").toString()); // Imposta il percorso dell'immagine
-                microrobotImage.setFitWidth(50); // Imposta la larghezza dell'immagine
-                microrobotImage.setFitHeight(50); // Imposta l'altezza dell'immagine
-                microrobotImage.setLayoutX(instance.getMicrorobotPosition(i).getX() * 50); // Modifica il fattore di scala in base alla larghezza delle caselle
-                microrobotImage.setLayoutY(instance.getMicrorobotPosition(i).getY() * 50); // Modifica il fattore di scala in base all'altezza delle caselle
-                microrobot.add(microrobotImage);
+                ImageView microrobotImage = new ImageView(getClass().getResource("/images/microrobot.png").toString());
+                microrobotImage.setFitWidth(50);
+                microrobotImage.setFitHeight(50);
+                gridPane.add(microrobotImage, instance.getMicrorobotPosition(i).getX(), instance.getMicrorobotPosition(i).getY());
+                nmicrorobot++;
             }
 
-            labInvoker.execute(instance.getMaze(), instance.getExitPosition(), new DrawMaze(name.getText(), lastName.getText(), nickname.getText(), gridPane));
-            
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
-                instance.notifyObservers();
-                instance.moveMicrorobot();
-                maze = updateInstance.getMaze();
-                instance.notifyObservers();
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
+                for (int i = 0; i < Integer.parseInt(robotNumber.getValue()); i++) {
+                    instance.notifyObservers();
+                    instance.moveMicrorobot();
+                    maze = updateInstance.getMaze();
+                    instance.notifyObservers();
 
-                for(int i = 0; i < Integer.parseInt(robotNumber.getValue()); i++){
-                    if (instance.getMicrorobotPosition(i) == instance.getExitPosition()) {
-                        instance.removeMicrorobot(i);
-                        microrobot.remove(i);
+                    // Aggiorna la posizione dei microrobot sul GridPane
+                    gridPane.getChildren().removeIf(node -> node instanceof ImageView);
+                    for (int j = 0; j < nmicrorobot; j++) {
+                        ImageView robotImage = new ImageView(getClass().getResource("/images/microrobot.png").toString());
+                        robotImage.setFitWidth(50);
+                        robotImage.setFitHeight(50);
+                        gridPane.add(robotImage, instance.getMicrorobotPosition(j).getX(), instance.getMicrorobotPosition(j).getY());
                     }
-
-                    microrobot.get(i).setLayoutX(instance.getMicrorobotPosition(i).getX() * 50);
-                    microrobot.get(i).setLayoutY(instance.getMicrorobotPosition(i).getY() * 50);
                 }
-
-                stage.setScene(new Scene(gridPane));
+                stage.setScene(mazeScene);
             }));
+            timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
-    
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }

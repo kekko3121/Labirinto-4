@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.maze.Strategy.Microrobot;
 import com.maze.Interactors.Box;
-import com.maze.Interactors.ValueBox;
 
 /**
  * Classe per aggiornare lo stato del gioco e la posizione dei microrobot all'interno del labirinto

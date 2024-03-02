@@ -19,33 +19,43 @@ public class DrawMaze extends MazeCommand {
     }
 
     public void buildMaze(Box[][] maze, Position exPosition) {
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[i].length; j++) {
+        int size = maze.length;
+    
+        for (int i = 0; i <= size + 1; i++) { // Estendi i limiti per includere i muri esterni
+            for (int j = 0; j <= size + 1; j++) {
                 Rectangle rect = new Rectangle(50, 50);
-
-                if (isExternalWall(i, j, maze.length, exPosition)) {
+    
+                if (isExternalWall(i, j, size, exPosition)) {
                     rect.setFill(Color.GRAY); // Colore dei muri esterni
                     rect.setStroke(Color.BLACK); // Bordo nero
                     rect.setStrokeWidth(1.0);
-                    
-                    
-                } else {
-                    if (maze[i][j].getValue() == ValueBox.WALL) {
+                } else if (i == exPosition.getX() + 1 && j == exPosition.getY() + 1) { // Verifica se siamo nella posizione dell'uscita
+                    rect.setFill(Color.WHITE); // Lascia vuota l'uscita
+                    rect.setStroke(Color.BLACK); // Bordo nero
+                    rect.setStrokeWidth(1.0);
+                } else if (i > 0 && i <= size && j > 0 && j <= size) { // Assicurati di disegnare solo il labirinto interno
+                    if (maze[i - 1][j - 1].getValue() == ValueBox.WALL) {
                         rect.setFill(Color.BLACK); // Parete interna
                         rect.setStroke(Color.BLACK); // Bordo nero
-                    rect.setStrokeWidth(1.0);
+                        rect.setStrokeWidth(1.0);
+                    } else if (maze[i - 1][j - 1].getValue() == ValueBox.HATCH) {
+                        rect.setFill(Color.BLUE);
+                        rect.setStroke(Color.BLACK); // Bordo nero
+                        rect.setStrokeWidth(1.0);
                     } else {
                         rect.setFill(Color.WHITE); // Passaggio
                         rect.setStroke(Color.BLACK); // Bordo nero
-                    rect.setStrokeWidth(1.0);
+                        rect.setStrokeWidth(1.0);
                     }
                 }
+    
                 mazeGrid.add(rect, j, i);
             }
         }
     }
-
+    
     private boolean isExternalWall(int row, int col, int size, Position exPosition) {
-        return (row == 0 || row == size - 1 || col == 0 || col == size - 1) && !(exPosition.getX() == row && exPosition.getY() == col);
+        return (row == 0 || row == size + 1 || col == 0 || col == size + 1)
+                && !(row == exPosition.getX() && col == exPosition.getY()); // Non aggiungere 1 qui, poiché l'uscita è inclusa nei limiti della matrice
     }
 }

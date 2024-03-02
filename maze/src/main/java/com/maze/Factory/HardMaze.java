@@ -27,7 +27,7 @@ public class HardMaze extends Maze{
         for(int i = 10; i < getDim() -2; i++){
             getBox(10, i).setValue(ValueBox.WALL);
         }
-        for(int i = 6; i < getDim() - 1; i++){
+        for(int i = 6; i < getDim(); i++){
             getBox(3, i).setValue(ValueBox.WALL);
         }
         generateTrapdoors(7); // genera 7 botole

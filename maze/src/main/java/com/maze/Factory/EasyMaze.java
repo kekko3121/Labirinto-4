@@ -24,10 +24,10 @@ public class EasyMaze extends Maze{
         for(int i = getDim() - 1; i > 7;  i--){
             getBox(i, 7).setValue(ValueBox.WALL);
         }
-        for(int i = 10; i < getDim() -2; i++){
+        for(int i = 10; i < getDim() - 2; i++){
             getBox(10, i).setValue(ValueBox.WALL);
         }
-        for(int i = 6; i < getDim() - 1; i++){
+        for(int i = 6; i < getDim(); i++){
             getBox(3, i).setValue(ValueBox.WALL);
         }
         generateTrapdoors(2); // genera 2 botole

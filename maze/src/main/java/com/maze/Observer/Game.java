@@ -73,10 +73,10 @@ public class Game implements Observable {
      */
     public void addMicrorobot() {
         Position newPosition;
-
+    
         do {
             newPosition = new Position(ThreadLocalRandom.current().nextInt(maze.getDim()), ThreadLocalRandom.current().nextInt(maze.getDim()));
-        } while (!isValidPosition(newPosition));
+        } while (!isValidPosition(newPosition) || maze.getBox(newPosition.getX(), newPosition.getY()).getValue() == ValueBox.WALL);
         microrobots.add(new Microrobot(newPosition, new OneMove(maze.getMaze(), maze.getExitMaze())));
     }
 
@@ -92,7 +92,7 @@ public class Game implements Observable {
     private boolean isValidPosition(Position position) {
 
         // Verifica se la posizione è al di fuori del labirinto
-        if (position.getX() < 0 || position.getX() >= maze.getDim() || position.getY() < 0 || position.getY() >= maze.getDim()) {
+        if (position.getX() < 1 || position.getX() >= maze.getDim() || position.getY() < 1 || position.getY() >= maze.getDim()) {
             return false; // La posizione è al di fuori del labirinto
         }
 
