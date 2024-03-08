@@ -1,11 +1,16 @@
 package com.maze.Observer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.maze.Strategy.Microrobot;
 import com.maze.Strategy.OneMove;
+
+import javafx.geometry.Pos;
+
 import com.maze.Factory.Maze;
 import com.maze.Factory.MazeDifficulty;
 import com.maze.Interactors.Box;
@@ -27,6 +32,8 @@ public class Game implements Observable {
 
     private GameStateMemento previousState; // Memento per salvare lo stato del gioco
 
+    private Set<Position> occupiedPositions; // Posizioni occupate dai microrobots
+
     /**
      * Costruttore per inizializzare il labirinto con la difficolta e il numero microrobot scelto dall'utente
      * @param hardships
@@ -35,6 +42,7 @@ public class Game implements Observable {
         maze = new MazeDifficulty().createMaze(hardships); // crea il labirinto con la difficoltà scelta
         microrobots = new ArrayList<>(); // inizializza la lista dei microrobot
         observers = new ArrayList<>(); // inizializza la lista degli osservatori
+        occupiedPositions = new HashSet<>();
 
         // Assicurarsi che il labirinto sia stato creato
         assert maze != null;
@@ -73,14 +81,18 @@ public class Game implements Observable {
      */
     public void addMicrorobot() {
         Position newPosition;
-    
         do {
             newPosition = new Position(ThreadLocalRandom.current().nextInt(maze.getDim()), ThreadLocalRandom.current().nextInt(maze.getDim()));
-        } while (!isValidPosition(newPosition) || maze.getBox(newPosition.getX(), newPosition.getY()).getValue() == ValueBox.WALL);
+        } while (!isValidPosition(newPosition) || maze.getBox(newPosition.getX(), newPosition.getY()).getValue() == ValueBox.WALL || occupiedPositions.contains(newPosition));
+        
+        // Aggiungi la nuova posizione al set delle posizioni occupate
+        occupiedPositions.add(newPosition);
+    
         microrobots.add(new Microrobot(newPosition, new OneMove(maze.getMaze(), maze.getExitMaze())));
     }
 
     public void removeMicrorobot(int i) {
+        occupiedPositions.remove(microrobots.get(i).getPosition());
         microrobots.remove(i);
     }
 
@@ -92,7 +104,7 @@ public class Game implements Observable {
     private boolean isValidPosition(Position position) {
 
         // Verifica se la posizione è al di fuori del labirinto
-        if (position.getX() < 1 || position.getX() >= maze.getDim() || position.getY() < 1 || position.getY() >= maze.getDim()) {
+        if (position.getX() <= 0 || position.getX() >= maze.getDim() || position.getY() <= 0 || position.getY() >= maze.getDim()) {
             return false; // La posizione è al di fuori del labirinto
         }
 
@@ -116,25 +128,22 @@ public class Game implements Observable {
      */
     public void moveMicrorobot() {
         for (Microrobot microrobot : microrobots) { // Per ogni microrobot
-            Position newPosition = microrobot.getMicroRobotStrategy().nextMove(microrobot.getPosition());
+            occupiedPositions.remove(microrobot.getPosition()); // Rimuovi la posizione occupata dal microrobot
+            microrobot.move(); // Muove il microrobot
 
-            // Verifica se la nuova posizione è valida
-            if (isValidPosition(newPosition)) {
-                microrobot.move(); // Muove il microrobot nella nuova posizione
-    
-                // Verifica se la nuova posizione è una botola
-                if (maze.getBox(newPosition.getX(), newPosition.getY()).getValue() == ValueBox.HATCH) {
-                    // Genera casualmente una nuova posizione fino a trovare una casella vuota
-                    do {
-                        newPosition = new Position(ThreadLocalRandom.current().nextInt(maze.getDim()), ThreadLocalRandom.current().nextInt(maze.getDim()));
-                    } while (!isValidPosition(newPosition));
-                    
-                    // Muove il microrobot nella nuova posizione
-                    microrobot.setActualPosition(newPosition);
-                }
+            if (maze.getBox(microrobot.getPosition().getX(), microrobot.getPosition().getY()).getValue() == ValueBox.HATCH) {
+                Position newPosition;
+
+                do {
+                    newPosition = new Position(ThreadLocalRandom.current().nextInt(maze.getDim()), ThreadLocalRandom.current().nextInt(maze.getDim()));
+                } while (!isValidPosition(newPosition) || maze.getBox(newPosition.getX(), newPosition.getY()).getValue() == ValueBox.WALL || occupiedPositions.contains(newPosition));
+
+                microrobot.setActualPosition(newPosition);
             }
+            occupiedPositions.add(microrobot.getPosition()); // Aggiungi la nuova posizione occupata dal microrobot
         }
     }
+    
 
     public Position getExitPosition() {
         return maze.getExitMaze();

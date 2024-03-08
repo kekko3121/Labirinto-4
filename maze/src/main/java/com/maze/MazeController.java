@@ -15,7 +15,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -23,7 +22,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 
 import com.maze.Interactors.Box;
 import com.maze.Interactors.Hardships;
@@ -72,10 +70,6 @@ public class MazeController {
     private LabInvoker labInvoker = new LabInvoker();
 
     private Game instance;
-
-    private UpdateGame updateInstance;
-
-    private Box[][] maze;
 
     private int nmicrorobot;
 
@@ -150,11 +144,9 @@ public class MazeController {
             MazeController scoreController = scoreLoader.getController();
             scoreController.startProgressBar();
             Stage stage = (Stage) readyButton.getScene().getWindow();
-            Scene scoreScene = new Scene(scoreRoot);
-            Scene mazeScene = new Scene(gridPane);
 
             // Mostra la pagina dei punteggi
-            stage.setScene(scoreScene);
+            stage.setScene(new Scene(scoreRoot));
             stage.show();
 
             // Ottiene la difficoltà selezionata
@@ -166,8 +158,6 @@ public class MazeController {
             } else if (selectedLevel.equals("Hard")) {
                 instance = new Game(Hardships.HARD);
             }
-
-            updateInstance = new UpdateGame();
 
             labInvoker.execute(instance.getMaze(), instance.getExitPosition(), new DrawMaze(name.getText(), lastName.getText(), nickname.getText(), gridPane));
 
@@ -181,23 +171,26 @@ public class MazeController {
                 nmicrorobot++;
             }
 
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
-                for (int i = 0; i < Integer.parseInt(robotNumber.getValue()); i++) {
-                    instance.notifyObservers();
-                    instance.moveMicrorobot();
-                    maze = updateInstance.getMaze();
-                    instance.notifyObservers();
+            Scene mazeScene = new Scene(gridPane);
 
-                    // Aggiorna la posizione dei microrobot sul GridPane
-                    gridPane.getChildren().removeIf(node -> node instanceof ImageView);
-                    for (int j = 0; j < nmicrorobot; j++) {
-                        ImageView robotImage = new ImageView(getClass().getResource("/images/microrobot.png").toString());
-                        robotImage.setFitWidth(50);
-                        robotImage.setFitHeight(50);
-                        gridPane.add(robotImage, instance.getMicrorobotPosition(j).getX(), instance.getMicrorobotPosition(j).getY());
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
+                stage.setScene(mazeScene);
+                instance.notifyObservers();
+                instance.moveMicrorobot();
+                
+                // Aggiorna la posizione dei microrobot sul GridPane
+                gridPane.getChildren().removeIf(node -> node instanceof ImageView);
+                for (int j = 0; j < nmicrorobot; j++) {
+                    ImageView robotImage = new ImageView(getClass().getResource("/images/microrobot.png").toString());
+                    robotImage.setFitWidth(50);
+                    robotImage.setFitHeight(50);
+                    gridPane.add(robotImage, instance.getMicrorobotPosition(j).getY(), instance.getMicrorobotPosition(j).getX());
+                    if (instance.getMicrorobotPosition(j).equals(instance.getExitPosition())) {
+                        instance.removeMicrorobot(j);
+                        gridPane.getChildren().remove(instance.getMicrorobotPosition(j).getX(), instance.getMicrorobotPosition(j).getY());
+                        nmicrorobot--;
                     }
                 }
-                stage.setScene(mazeScene);
             }));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.collections.*?>
 <?import javafx.scene.*?>
 <?import java.lang.*?>
@@ -18,11 +19,8 @@
                 <Image url="@../../images/top_score.jpg" />
             </image>
         </ImageView>
-
-
-
       <ProgressBar fx:id="progressBar" layoutX="911.0" layoutY="609.0" prefHeight="50.0" prefWidth="280.0" progress="0.0" />
-<Label  fx:id="first" layoutX="129.0" layoutY="200.0" prefHeight="73.0" prefWidth="564.0" text="Label" textFill="WHITE">
+      <Label fx:id="first" layoutX="129.0" layoutY="200.0" prefHeight="73.0" prefWidth="564.0" text="Label" textFill="WHITE">
          <font>
             <Font name="Bodoni MT Bold" size="47.0" />
          </font>
@@ -37,16 +35,15 @@
             <Font name="Bodoni MT Bold" size="47.0" />
          </font>
       </Label>
-      <Label fx:id="fourth" layoutX="129.0" layoutY="471.0" prefHeight="73.0" prefWidth="564.0" text="Label" textFill="WHITE">
+      <Label layoutX="129.0" layoutY="471.0" prefHeight="73.0" prefWidth="564.0" text="Label" textFill="WHITE">
          <font>
             <Font name="Bodoni MT Bold" size="47.0" />
          </font>
       </Label>
-      <Label fx:id="fifth" layoutX="120.0" layoutY="561.0" prefHeight="73.0" prefWidth="564.0" text="Label" textFill="WHITE">
+      <Label layoutX="120.0" layoutY="561.0" prefHeight="73.0" prefWidth="564.0" text="Label" textFill="WHITE">
          <font>
             <Font name="Bodoni MT Bold" size="47.0" />
          </font>
       </Label>
-
     </children>
 </AnchorPane>

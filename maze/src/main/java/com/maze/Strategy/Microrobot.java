@@ -57,6 +57,6 @@ public class Microrobot {
      * Metodo per muovere il microrobot.
      */
     public void move(){
-        this.setActualPosition(this.microRobotStrategy.nextMove(this.actualPosition));
+        this.setActualPosition(this.microRobotStrategy.nextMove(this.getPosition()));
     }
 }
