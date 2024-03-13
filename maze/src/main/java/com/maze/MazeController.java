@@ -27,6 +27,8 @@ import com.maze.Interactors.Box;
 import com.maze.Interactors.Hardships;
 import com.maze.Observer.Game;
 import com.maze.Observer.UpdateGame;
+import com.maze.Bridge.MysqlBridge;
+import com.maze.Bridge.MysqlConnection;
 import com.maze.Command.*;
 
 import javafx.scene.control.ProgressBar;
@@ -73,8 +75,11 @@ public class MazeController {
 
     private int nmicrorobot;
 
+    private MysqlBridge dbconnection;
+
     public MazeController() {
         gridPane = new GridPane();
+        dbconnection = new MysqlBridge(new MysqlConnection("jdbc:mysql://localhost:3306/classifica_lab", "root", "Esame"));
     }
 
     @FXML
@@ -119,6 +124,7 @@ public class MazeController {
         Node source = (Node) event.getSource();// Ottiene il nodo sorgente dell'evento
         Stage stage = (Stage) source.getScene().getWindow();// Ottiene lo stage (finestra) corrispondente al nodo sorgente
         stage.close();// Chiude la finestra corrente
+        dbconnection.disconnect();
     }
 
     @FXML
@@ -138,6 +144,7 @@ public class MazeController {
     @FXML
     private void goReady(ActionEvent event) {
         try {
+            dbconnection.connect();
             // Carica la pagina dei punteggi
             FXMLLoader scoreLoader = new FXMLLoader(getClass().getResource("score.fxml"));
             Parent scoreRoot = scoreLoader.load();
