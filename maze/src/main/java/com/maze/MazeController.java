@@ -146,19 +146,12 @@ public class MazeController {
         }
     }
 
-    public void initialize() throws SQLException {
-        //connsessione al database
-        dbconnection.connect();
-        ResultSet a = dbconnection.executeQuery("select nickname, risultato from Utente join Best_Result on Utente.id = Best_Result.utente_id ORDER BY Best_Result.risultato DESC LIMIT 5");
-        a.next();
-        first.setText(a.getString("nickname") + " " + a.getString("risultato"));
-        dbconnection.disconnect();
-    }
-
     @FXML
-    private void goReady(ActionEvent event){
+    private void goReady(ActionEvent event) throws SQLException {
         try {
 
+            //connsessione al database
+            dbconnection.connect();
 
             // Carica la pagina dei punteggi
             FXMLLoader scoreLoader = new FXMLLoader(getClass().getResource("score.fxml"));
@@ -169,6 +162,11 @@ public class MazeController {
 
             // Mostra la pagina dei punteggi
             stage.setScene(new Scene(scoreRoot));
+
+            ResultSet a = dbconnection.executeQuery("select nickname, risultato from Utente join Best_Result on Utente.id = Best_Result.utente_id ORDER BY Best_Result.risultato DESC LIMIT 5");
+            a.next();
+            first.setText(a.getString("nickname") + " " + a.getString("risultato"));
+
             stage.show();
 
             // Ottiene la difficoltà selezionata
