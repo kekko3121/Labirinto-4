@@ -65,7 +65,7 @@ public class MysqlConnection implements IConnection{
      * @return ResultSet
      * @throws SQLException
      */
-    public ResultSet executeQuery(String query) throws SQLException {
+    public ResultSet executeQuery(String query) {
         ResultSet resultSet = null; // Variabile per contenere il risultato della query
         try {
             resultSet = connection.createStatement().executeQuery(query); // Esecuzione della query

@@ -17,16 +17,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.control.Label;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import com.maze.Interactors.Box;
 import com.maze.Interactors.Hardships;
 import com.maze.Observer.Game;
-import com.maze.Observer.UpdateGame;
 import com.maze.Bridge.MysqlBridge;
 import com.maze.Bridge.MysqlConnection;
 import com.maze.Command.*;
@@ -61,13 +62,17 @@ public class MazeController {
     private ProgressBar progressBar;
 
     @FXML
-    TextField name, lastName, nickname;
+    private TextField name, lastName, nickname;
+
+    @FXML
+    private Label first, second, third, fourth, fifth;
 
     @FXML
     private ChoiceBox<String> level, robotNumber;
 
     @FXML
     private GridPane gridPane;
+
 
     private LabInvoker labInvoker = new LabInvoker();
 
@@ -141,10 +146,20 @@ public class MazeController {
         }
     }
 
+    public void initialize() throws SQLException {
+        //connsessione al database
+        dbconnection.connect();
+        ResultSet a = dbconnection.executeQuery("select nickname, risultato from Utente join Best_Result on Utente.id = Best_Result.utente_id ORDER BY Best_Result.risultato DESC LIMIT 5");
+        a.next();
+        first.setText(a.getString("nickname") + " " + a.getString("risultato"));
+        dbconnection.disconnect();
+    }
+
     @FXML
-    private void goReady(ActionEvent event) {
+    private void goReady(ActionEvent event){
         try {
-            dbconnection.connect();
+
+
             // Carica la pagina dei punteggi
             FXMLLoader scoreLoader = new FXMLLoader(getClass().getResource("score.fxml"));
             Parent scoreRoot = scoreLoader.load();

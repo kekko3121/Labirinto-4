@@ -57,7 +57,7 @@ public class ArtificialBeeColony {
     }
 
     private boolean isValidMove(int x, int y) {
-        return x > 0 && x < maze.length - 1 && y > 0 && y < maze[0].length - 1 && maze[x][y].getValue() != ValueBox.WALL;
+        return x > 0 && x < maze.length && y > 0 && y < maze.length && maze[x][y].getValue() != ValueBox.WALL;
     }
 
     private double calculateQuality(Position position) {
