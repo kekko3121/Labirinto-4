@@ -19,6 +19,15 @@ public interface IConnection {
     public void disconnect();
 
     /**
+     * Metodo per eseguire un insert
+     * @param query
+     * @return
+     * @throws SQLException
+     */
+
+    public int executeInsert(String query) throws SQLException;
+
+    /**
      * Metodo per eseguire una query
      * @param query la query da eseguire
      * @return il risultato della query

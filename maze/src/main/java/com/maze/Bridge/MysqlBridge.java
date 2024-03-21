@@ -33,6 +33,17 @@ public class MysqlBridge extends DatabaseBridge{
     }
 
     /**
+     * Metodo per eseguire un insert
+     * @param query
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public int executeInsert(String query) throws SQLException {
+        return connection.executeInsert(query);
+    }
+
+    /**
      * Metodo per eseguire una query
      * @param query
      * @return

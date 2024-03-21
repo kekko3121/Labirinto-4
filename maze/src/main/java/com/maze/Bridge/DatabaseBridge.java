@@ -24,5 +24,6 @@ public abstract class DatabaseBridge {
      */
     public abstract void connect();
     public abstract void disconnect();
+    public abstract int executeInsert(String query) throws SQLException;
     public abstract ResultSet executeQuery(String query) throws SQLException;
 }

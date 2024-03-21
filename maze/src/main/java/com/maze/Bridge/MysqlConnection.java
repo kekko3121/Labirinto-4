@@ -60,6 +60,22 @@ public class MysqlConnection implements IConnection{
     }
 
     /**
+     * Metodo per eseguire un insert sul database MySQL
+     * @param query
+     * @return int
+     * @throws SQLException
+     */
+    public int executeInsert(String query) {
+        int result = 0; // Variabile per contenere il risultato dell'insert
+        try {
+            result = connection.createStatement().executeUpdate(query); // Esecuzione dell'insert
+        } catch (SQLException e) {
+            System.err.println("Error executing insert: " + e.getMessage());
+        }
+        return result; // Ritorno del risultato dell'insert
+    }
+
+    /**
      * Metodo per eseguire una query sul database MySQL
      * @param query
      * @return ResultSet

@@ -150,8 +150,10 @@ public class MazeController {
     private void goReady(ActionEvent event) throws SQLException {
         try {
 
-            //connsessione al database
+            //connessione al database
             dbconnection.connect();
+            
+            //dbconnection.executeInsert("INSERT INTO Utente (nome, cognome, nickname) VALUES ('" + name.getText() + "', '" + lastName.getText() + "', '" + nickname.getText() + "')");
 
             // Carica la pagina dei punteggi
             FXMLLoader scoreLoader = new FXMLLoader(getClass().getResource("score.fxml"));
@@ -165,7 +167,15 @@ public class MazeController {
 
             ResultSet a = dbconnection.executeQuery("select nickname, risultato from Utente join Best_Result on Utente.id = Best_Result.utente_id ORDER BY Best_Result.risultato DESC LIMIT 5");
             a.next();
-            first.setText(a.getString("nickname") + " " + a.getString("risultato"));
+            scoreController.first.setText(a.getString("nickname") + " " + a.getString("risultato"));
+            /*a.next();
+            scoreController.second.setText(a.getString("nickname") + " " + a.getString("risultato"));
+            a.next();
+            scoreController.third.setText(a.getString("nickname") + " " + a.getString("risultato"));
+            a.next();
+            scoreController.fourth.setText(a.getString("nickname") + " " + a.getString("risultato"));
+            a.next();
+            scoreController.fifth.setText(a.getString("nickname") + " " + a.getString("risultato"));*/
 
             stage.show();
 
