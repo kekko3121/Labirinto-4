@@ -1,7 +1,6 @@
 package com.maze.Command;
 
 import com.maze.Interactors.Box;
-import com.maze.Interactors.Hardships;
 import com.maze.Interactors.Position;
 
 public abstract class MazeCommand {
