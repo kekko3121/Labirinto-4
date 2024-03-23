@@ -91,6 +91,10 @@ public class Game implements Observable {
         microrobots.add(new Microrobot(newPosition, new OneMove(maze.getMaze(), maze.getExitMaze())));
     }
 
+    /**
+     * Metodo per rimuovere un microrobot all'interno del labirinto
+     * @param i
+     */
     public void removeMicrorobot(int i) {
         occupiedPositions.remove(microrobots.get(i).getPosition());
         microrobots.remove(i);
@@ -129,6 +133,13 @@ public class Game implements Observable {
     public void moveMicrorobot() {
         for (Microrobot microrobot : microrobots) { // Per ogni microrobot
             microrobot.move(); // Muove il microrobot
+
+            if(maze.getBox(microrobot.getPosition().getX(), microrobot.getPosition().getY()).getValue() == ValueBox.HATCH) {
+                Position newPosition;
+                do {
+                    newPosition = new Position(ThreadLocalRandom.current().nextInt(maze.getDim()), ThreadLocalRandom.current().nextInt(maze.getDim()));
+                } while (!isValidPosition(newPosition) || maze.getBox(newPosition.getX(), newPosition.getY()).getValue() == ValueBox.WALL || occupiedPositions.contains(newPosition));
+            }
         }
     }
     

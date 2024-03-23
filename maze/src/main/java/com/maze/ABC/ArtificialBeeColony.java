@@ -10,21 +10,31 @@ import com.maze.Interactors.Box;
 
 public class ArtificialBeeColony {
 
-    private final int mazeSize;
-    private final Box[][] maze;
-    private final Position exitPosition;
+    private final int mazeSize; // Dimensione del labirinto
+    private final Box[][] maze; // Labirinto
+    private final Position exitPosition; // Posizione di uscita
     
-    private final int MAX_ITERATIONS = 1000;
-    private final int MAX_TRIALS = 50;
-    private final int NUM_BEES = 10;
-    private final Random random = new Random();
+    private final int MAX_ITERATIONS = 1000; // Numero massimo di iterazioni
+    private final int MAX_TRIALS = 50; // Numero massimo di tentativi
+    private final int NUM_BEES = 10; // Numero di api
+    private final Random random = new Random(); // Generatore di numeri casuali
 
+    /**
+     * Costruttore della classe ArtificialBeeColony che inizializza il labirinto e la posizione di uscita
+     * @param maze Labirinto
+     * @param exitPosition Posizione di uscita
+     */
     public ArtificialBeeColony(Box[][] maze, Position exitPosition) {
         this.mazeSize = maze.length;
         this.maze = maze;
         this.exitPosition = exitPosition;
     }
 
+    /**
+     * Metodo che calcola il percorso del microrobot all'interno del labirinto
+     * @param initialPosition Posizione iniziale del microrobot
+     * @return Lista di posizioni che rappresentano il percorso del microrobot
+     */
     public List<Position> calculateMicrorobotPath(Position initialPosition) {
         List<Position> pathToExit = new ArrayList<>();
         pathToExit.add(initialPosition); // Aggiungi la posizione iniziale al percorso
@@ -49,8 +59,13 @@ public class ArtificialBeeColony {
         }
     
         return pathToExit;
-    }    
+    }
 
+    /**
+     * Metodo che inizializza le api all'interno del labirinto
+     * @param initialPosition Posizione iniziale delle api
+     * @return Lista di api inizializzate
+     */
     private List<Bee> initializeBees(Position initialPosition) {
         List<Bee> bees = new ArrayList<>();
         for (int i = 0; i < NUM_BEES; i++) {
@@ -59,6 +74,10 @@ public class ArtificialBeeColony {
         return bees;
     }
 
+    /**
+     * Metodo che invia le api impiegate all'interno del labirinto
+     * @param bees Lista di api
+     */
     private void sendEmployedBees(List<Bee> bees) {
         for (Bee bee : bees) {
             Position newPosition = generateNewPosition(bee.getPosition());
@@ -73,6 +92,10 @@ public class ArtificialBeeColony {
         }
     }
 
+    /**
+     * Metodo che invia le api osservatrici all'interno del labirinto
+     * @param bees Lista di api
+     */
     private void sendOnlookerBees(List<Bee> bees) {
         double totalFitness = 0.0;
         for (Bee bee : bees) {
@@ -94,42 +117,60 @@ public class ArtificialBeeColony {
         }
     }
 
+    /**
+     * Metodo che invia le api esploratrici all'interno del labirinto
+     * @param bees Lista di api
+     */
     private void sendScoutBees(List<Bee> bees) {
         for (Bee bee : bees) {
             if (bee.getTrials() >= MAX_TRIALS) {
-                bee.setPosition(generateRandomPosition());
+                bee.setPosition(generateNewPosition(exitPosition));
                 bee.resetTrials();
             }
         }
     }
 
+    /**
+     * Metodo che genera una nuova posizione all'interno del labirinto
+     * @param currentPosition Posizione attuale
+     * @return Nuova posizione
+     */
     private Position generateNewPosition(Position currentPosition) {
-        List<Position> possibleMoves = new ArrayList<>();
-        // Definisci gli spostamenti relativi consentiti (ignorando la posizione attuale)
+        // Definisci gli spostamenti relativi consentiti
         int[][] moves = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        for (int[] move : moves) {
-            int newX = currentPosition.getX() + move[0];
-            int newY = currentPosition.getY() + move[1];
-            // Verifica se la nuova posizione è all'interno del labirinto e non è un muro
-            if (newX >= 0 && newX < mazeSize && newY >= 0 && newY < mazeSize && maze[newX][newY].getValue() != ValueBox.WALL) {
-                possibleMoves.add(new Position(newX, newY));
-            }
-        }
-        if (!possibleMoves.isEmpty()) {
-            // Scegli casualmente una delle mosse possibili
-            return possibleMoves.get(random.nextInt(possibleMoves.size()));
+        
+        // Scegli casualmente una delle quattro direzioni
+        int[] move = moves[random.nextInt(moves.length)];
+        
+        // Calcola la nuova posizione
+        int newX = currentPosition.getX() + move[0];
+        int newY = currentPosition.getY() + move[1];
+        
+        // Verifica se la nuova posizione è all'interno del labirinto e non è un muro
+        if (newX >= 0 && newX < mazeSize && newY >= 0 && newY < mazeSize && maze[newX][newY].getValue() != ValueBox.WALL) {
+            return new Position(newX, newY);
         } else {
-            // Se non ci sono mosse valide, resta nella posizione attuale
+            // Se la nuova posizione è fuori dal labirinto o è un muro, resta nella posizione attuale
             return currentPosition;
         }
-    }    
+    }
 
+    /**
+     * Metodo che calcola il valore di fitness di una posizione all'interno del labirinto
+     * @param position Posizione all'interno del labirinto
+     * @return Valore di fitness
+     */
     private double evaluateFitness(Position position) {
         double distance = Math.sqrt(Math.pow(position.getX() - exitPosition.getX(), 2) +
                                     Math.pow(position.getY() - exitPosition.getY(), 2));
         return 1.0 / (1.0 + distance);
     }
 
+    /**
+     * Metodo che restituisce l'api con il valore di fitness più alto
+     * @param bees Lista di api
+     * @return Api con il valore di fitness più alto
+     */
     private Bee getBestBee(List<Bee> bees) {
         Bee bestBee = bees.get(0);
         for (Bee bee : bees) {
@@ -140,46 +181,74 @@ public class ArtificialBeeColony {
         return bestBee;
     }
 
-    private Position generateRandomPosition() {
-        int x = random.nextInt(mazeSize);
-        int y = random.nextInt(mazeSize);
-        return new Position(x, y);
-    }
-
+    /**
+     * Classe interna che rappresenta un ape all'interno del labirinto
+     */
     private static class Bee {
-        private Position position;
-        private double fitness;
-        private int trials;
+        private Position position; // Posizione dell ape
+        private double fitness; // Valore di fitness dell'ape
+        private int trials; // Numero di tentativi
 
+        /**
+         * Costruttore della classe Bee
+         * @param position Posizione dell'ape
+         * @param fitness Valore di fitness dell'ape
+         */
         public Bee(Position position, double fitness) {
             this.position = position;
             this.fitness = fitness;
         }
 
+        /**
+         * Metodo che restituisce la posizione dell'ape
+         * @return Posizione dell'ape
+         */
         public Position getPosition() {
             return position;
         }
 
+        /**
+         * Metodo che imposta la posizione dell'ape
+         * @param position Posizione dell'ape
+         */
         public void setPosition(Position position) {
             this.position = position;
         }
 
+        /**
+         * Metodo che restituisce il valore di fitness dell'ape
+         * @return Valore di fitness dell'ape
+         */
         public double getFitness() {
             return fitness;
         }
 
+        /**
+         * Metodo che imposta il valore di fitness dell'ape
+         * @param fitness Valore di fitness dell'ape
+         */
         public void setFitness(double fitness) {
             this.fitness = fitness;
         }
 
+        /**
+         * Metodo che restituisce il numero di tentativi dell'ape
+         * @return Numero di tentativi dell'ape
+         */
         public int getTrials() {
             return trials;
         }
 
+        /**
+         * Metodo che reimposta il numero di tentativi dell'ape
+         */
         public void resetTrials() {
             trials = 0;
         }
 
+        /**
+         * Metodo che incrementa il numero di tentativi dell'ape
+         */
         public void incrementTrials() {
             trials++;
         }
